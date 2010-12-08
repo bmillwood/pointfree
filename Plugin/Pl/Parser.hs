@@ -24,8 +24,8 @@ parens = T.parens tp
 brackets :: Parser a -> Parser a
 brackets = T.brackets tp
 
-symbol :: String -> Parser String
-symbol = T.symbol tp
+symbol :: String -> Parser ()
+symbol = fmap (const ()) . T.symbol tp
 
 atomic :: Parser String
 atomic = try (show `fmap` T.natural tp) <|> T.identifier tp
@@ -54,7 +54,7 @@ table = addToFirst def $ map (map inf) operators where
 
   inf :: (String, (Assoc, Int)) -> Operator Char st Expr
   inf (name, (assoc, _)) = Infix (try $ do 
-      string name
+      _ <- string name
       notFollowedBy $ oneOf opchars
       spaces
       let name' = if head name == '`' 
@@ -196,7 +196,7 @@ application = do
 endsIn :: Parser a -> Parser b -> Parser [a]
 endsIn p end = do
   xs <- many p
-  end
+  _ <- end
   return $ xs
 
 input :: Parser TopLevel

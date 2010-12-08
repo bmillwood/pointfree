@@ -5,10 +5,9 @@ module Plugin.Pl.Optimize (
 
 import Plugin.Pl.Common
 import Plugin.Pl.Rules
-import Plugin.Pl.PrettyPrinter
+import Plugin.Pl.PrettyPrinter ()
 
 import Data.List (nub)
-import Control.Monad.State
 
 cut :: [a] -> [a]
 cut = take 1

@@ -5,7 +5,6 @@ import Plugin.Pl.Optimize
 import Plugin.Pl.Parser
 import Plugin.Pl.Transform
 
-import Data.List (intersperse)
 import System.Environment (getArgs)
 import System.Console.GetOpt
 

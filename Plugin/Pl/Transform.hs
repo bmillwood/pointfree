@@ -4,7 +4,7 @@ module Plugin.Pl.Transform (
   ) where
 
 import Plugin.Pl.Common
-import Plugin.Pl.PrettyPrinter
+import Plugin.Pl.PrettyPrinter ()
 
 import qualified Data.Map as M
 
