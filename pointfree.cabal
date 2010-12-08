@@ -1,29 +1,38 @@
-name:                pointfree
-version:             1.0.3
-synopsis:            Pointfree refactoring tool
-description:         Stand-alone command-line version of the point-less plugin for lambdabot.
-license:             OtherLicense
-license-file:        LICENSE
-author:              Thomas Jäger
-homepage:            http://haskell.org/haskellwiki/Pointfree
-category:            Tool
-build-depends:       base, parsec, mtl, containers, array
-build-type:          Simple
+Cabal-Version: >= 1.6
 
-extra-source-files:
-                      Plugin/Pl/PrettyPrinter.hs
-                    , Plugin/Pl/Parser.hs
-                    , Plugin/Pl/Optimize.hs
-                    , Plugin/Pl/Rules.hs
-                    , Plugin/Pl/Transform.hs
-                    , Plugin/Pl/Common.hs
-                    , test/Makefile
-                    , test/Test.hs
-                    , README
+Name:     pointfree
+Version:  1.0.3
+Category: Tool
+Synopsis: Tool for refactoring expressions into pointfree form
 
+Description:
+    The pointfree tool is a standalone command-line version of the pl
+    plugin for lambdabot.
 
+Author:       Thomas Jäger
+Maintainer:   Ben Millwood <haskell@benmachine.co.uk>
+License:      OtherLicense
+License-file: LICENSE
 
+Build-type:         Simple
+Extra-source-files: README test/Makefile test/Test.hs
 
-executable:          pointfree
-main-is:             Main.hs
-ghc-options:         -Wall -funbox-strict-fields -fglasgow-exts
+Source-repository head
+  type:     git
+  location: git://github.com/benmachine/stepeval.git
+
+Executable pointfree
+  Main-is:       Main.hs
+  GHC-options:   -Wall
+  Build-depends: base >= 3 && < 4.4,
+                 array >= 0.3 && < 0.4,
+                 containers >= 0.3 && < 0.5,
+                 parsec >= 2 && < 3.2,
+                 mtl >= 2 && < 2.1
+  Other-modules: Plugin.Pl.Common
+                 Plugin.Pl.Parser
+                 Plugin.Pl.PrettyPrinter
+                 Plugin.Pl.Optimize
+                 Plugin.Pl.Rules
+                 Plugin.Pl.Transform
+
