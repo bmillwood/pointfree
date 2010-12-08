@@ -1,5 +1,3 @@
-{-# OPTIONS -fvia-C #-}
-
 module Plugin.Pl.Common (
         Fixity(..), Expr(..), Pattern(..), Decl(..), TopLevel(..),
         bt, sizeExpr, mapTopLevel, mapTopLevel', getExpr,

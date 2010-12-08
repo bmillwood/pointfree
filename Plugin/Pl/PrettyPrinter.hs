@@ -1,4 +1,5 @@
-{-# OPTIONS -fvia-C -fno-warn-orphans #-}
+{-# LANGUAGE PatternGuards #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Plugin.Pl.PrettyPrinter (Expr) where
 
 -- Dummy export to make ghc -Wall happy

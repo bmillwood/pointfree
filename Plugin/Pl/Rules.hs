@@ -1,7 +1,6 @@
-{-# OPTIONS -fvia-C #-}
-{-# OPTIONS -fno-warn-name-shadowing #-}
--- 6.4 gives a name shadow warning I haven't tracked down.
-
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 --
 -- | This marvellous module contributed by Thomas J\344ger
 --

@@ -1,4 +1,4 @@
-{-# OPTIONS -fvia-C -O2 -optc-O3 #-}
+{-# LANGUAGE ImplicitParams #-}
 module Plugin.Pl.Optimize (
     optimize,
   ) where

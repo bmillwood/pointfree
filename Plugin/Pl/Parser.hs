@@ -1,4 +1,3 @@
-{-# OPTIONS -fvia-C -O2 -optc-O3 #-}
 --
 -- Todo, use Language.Haskell
 --

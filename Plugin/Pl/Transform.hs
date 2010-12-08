@@ -1,4 +1,4 @@
-{-# OPTIONS -fvia-C -O2 -optc-O3 #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Plugin.Pl.Transform (
     transform,
   ) where
@@ -74,7 +74,7 @@ alphaRename e = alpha e `evalState` M.empty where
 
   -- act like a reader monad
   inEnv :: State s a -> State s a
-  inEnv (State f) = State $ \s -> (fst $ f s, s)
+  inEnv f = gets $ evalState f
 
   alphaPat (PVar v) = do
     fm <- get
