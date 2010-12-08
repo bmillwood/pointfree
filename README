@@ -1,0 +1,10 @@
+Pointfree refactoring tool
+==========================
+
+Stand-alone command-line version of the point-less plugin for lambdabot. Detailed information about the use of this tool is available at http://haskell.org/haskellwiki/Pointfree.
+
+Integration with GHCi: Make sure that the directory containing the pointfree executable is in your PATH environment variable and add the following line to your GHCi configuration file:
+
+:def pf \str -> return $ ":! pointfree \"" ++ str ++ "\""
+
+Or modify the line to point directly to the executable. Invoke pointfree with commands like :pf \x y -> x + y
