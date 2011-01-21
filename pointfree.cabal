@@ -19,7 +19,7 @@ Extra-source-files: README test/Makefile test/Test.hs
 
 Source-repository head
   type:     git
-  location: git://github.com/benmachine/stepeval.git
+  location: git://github.com/benmachine/pointfree.git
 
 Executable pointfree
   Main-is:       Main.hs
