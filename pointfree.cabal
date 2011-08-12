@@ -29,7 +29,7 @@ Executable pointfree
                  ImplicitParams,
                  PatternGuards,
                  ScopedTypeVariables
-  Build-depends: base >= 3 && < 4.4,
+  Build-depends: base >= 3 && < 4.5,
                  array >= 0.3 && < 0.4,
                  containers >= 0.3 && < 0.5,
                  parsec >= 2 && < 3.2,
