@@ -1,0 +1,13 @@
+v1.0.4.2: (never released on Hackage)
+* Dependency update for GHC 7.2
+
+v1.0.4.1:
+* Metadata fix
+
+v1.0.4:
+* Modernise pragma/extension usage
+* Update for mtl-2
+* Squash some warnings
+
+v1.0.3:
+* Last version released before I took maintainership
