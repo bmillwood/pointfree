@@ -15,7 +15,7 @@ License:      OtherLicense
 License-file: LICENSE
 
 Build-type:         Simple
-Extra-source-files: README test/Makefile test/Test.hs
+Extra-source-files: ChangeLog README test/Makefile test/Test.hs
 
 Source-repository head
   type:     git
