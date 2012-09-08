@@ -16,29 +16,29 @@ toMonadPlus :: MonadPlus m => Maybe a -> m a
 toMonadPlus Nothing = mzero
 toMonadPlus (Just x)= return x
 
-type Size = Double
+type Size = Integer
 -- This seems to be a better size for our purposes,
 -- despite being "a little" slower because of the wasteful uglyprinting
 sizeExpr' :: Expr -> Size 
-sizeExpr' e = fromIntegral (length $ show e) + adjust e where
+sizeExpr' e = 100 * fromIntegral (length $ show e) + adjust e where
   -- hackish thing to favor some expressions if the length is the same:
   -- (+ x) --> (x +)
   -- x >>= f --> f =<< x
   -- f $ g x --> f (g x)
   adjust :: Expr -> Size
   adjust (Var _ str) -- Just n <- readM str = log (n*n+1) / 4
-                     | str == "uncurry"    = -4
---                     | str == "s"          = 5
-                     | str == "flip"       = 0.1
-                     | str == ">>="        = 0.05
-                     | str == "$"          = 0.01
-                     | str == "subtract"   = 0.01
-                     | str == "ap"         = 2
-                     | str == "liftM2"     = 1.01
-                     | str == "return"     = -2
-                     | str == "zipWith"    = -4
-                     | str == "const"      = 0 -- -2
-                     | str == "fmap"       = -1
+                     | str == "uncurry"    = -400
+--                     | str == "s"          = 500
+                     | str == "flip"       = 10
+                     | str == ">>="        = 5
+                     | str == "$"          = 1
+                     | str == "subtract"   = 1
+                     | str == "ap"         = 200
+                     | str == "liftM2"     = 101
+                     | str == "return"     = -200
+                     | str == "zipWith"    = -400
+                     | str == "const"      = 0 -- -200
+                     | str == "fmap"       = -100
   adjust (Lambda _ e') = adjust e'
   adjust (App e1 e2)  = adjust e1 + adjust e2
   adjust _ = 0
