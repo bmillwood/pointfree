@@ -12,23 +12,23 @@ import qualified Language.Haskell.Exts as HSE
 todo :: (Show e) => e -> a
 todo thing = error ("pointfree: not supported: " ++ show thing)
 
-nameString :: HSE.Name -> String
-nameString (HSE.Ident s) = s
-nameString (HSE.Symbol s) = s
+nameString :: HSE.Name -> (Fixity, String)
+nameString (HSE.Ident s) = (Pref, s)
+nameString (HSE.Symbol s) = (Inf, s)
 
-qnameString :: HSE.QName -> String
-qnameString (HSE.Qual m n) = HSE.prettyPrint m ++ nameString n
+qnameString :: HSE.QName -> (Fixity, String)
+qnameString (HSE.Qual m n) = fmap (HSE.prettyPrint m ++) (nameString n)
 qnameString (HSE.UnQual n) = nameString n
 qnameString (HSE.Special sc) = case sc of
-  HSE.UnitCon -> "()"
-  HSE.ListCon -> "[]"
-  HSE.FunCon -> "->"
-  HSE.TupleCon HSE.Boxed n -> replicate (n-1) ','
+  HSE.UnitCon -> (Pref, "()")
+  HSE.ListCon -> (Pref, "[]")
+  HSE.FunCon -> (Inf, "->")
+  HSE.TupleCon HSE.Boxed n -> (Inf, replicate (n-1) ',')
   HSE.TupleCon{} -> todo sc
-  HSE.Cons -> ":"
+  HSE.Cons -> (Inf, ":")
   HSE.UnboxedSingleCon -> todo sc
 
-opString :: HSE.QOp -> String
+opString :: HSE.QOp -> (Fixity, String)
 opString (HSE.QVarOp qn) = qnameString qn
 opString (HSE.QConOp qn) = qnameString qn
 
@@ -37,13 +37,13 @@ list = foldr (\y ys -> cons `App` y `App` ys) nil
 
 hseToExpr :: HSE.Exp -> Expr
 hseToExpr expr = case expr of
-  HSE.Var qn -> Var Pref (qnameString qn)
+  HSE.Var qn -> uncurry Var (qnameString qn)
   HSE.IPVar{} -> todo expr
-  HSE.Con qn -> Var Pref (qnameString qn)
+  HSE.Con qn -> uncurry Var (qnameString qn)
   HSE.Lit l -> case l of
     HSE.String s -> list (map (Var Pref . show) s)
     _ -> Var Pref (HSE.prettyPrint l)
-  HSE.InfixApp p op q -> apps (Var Inf (opString op)) [p,q]
+  HSE.InfixApp p op q -> apps (Var Inf (snd (opString op))) [p,q]
   HSE.App f x -> hseToExpr f `App` hseToExpr x
   HSE.NegApp e -> Var Pref "negate" `App` hseToExpr e
   HSE.Lambda _ ps e -> foldr (Lambda . hseToPattern) (hseToExpr e) ps
@@ -54,13 +54,12 @@ hseToExpr expr = case expr of
   HSE.Case{} -> todo expr
   HSE.Do{} -> todo expr
   HSE.MDo{} -> todo expr
-  HSE.Tuple es -> foldl (\a x -> a `App` hseToExpr x)
-    (Var Pref (replicate (length es - 1) ','))  es
+  HSE.Tuple es -> apps (Var Inf (replicate (length es - 1) ','))  es
   HSE.TupleSection{} -> todo expr
   HSE.List xs -> list (map hseToExpr xs)
   HSE.Paren e -> hseToExpr e
-  HSE.LeftSection l op -> Var Inf (opString op) `App` hseToExpr l
-  HSE.RightSection op r -> flip' `App` Var Inf (opString op) `App` hseToExpr r
+  HSE.LeftSection l op -> Var Inf (snd (opString op)) `App` hseToExpr l
+  HSE.RightSection op r -> flip' `App` Var Inf (snd (opString op)) `App` hseToExpr r
   HSE.RecConstr{} -> todo expr
   HSE.RecUpdate{} -> todo expr
   HSE.EnumFrom x -> apps (Var Pref "enumFrom") [x]
@@ -75,14 +74,14 @@ apps f xs = foldl (\a x -> a `App` hseToExpr x) f xs
 hseToDecl :: HSE.Decl -> Decl
 hseToDecl dec = case dec of
   HSE.PatBind _ (HSE.PVar n) Nothing (HSE.UnGuardedRhs e) (HSE.BDecls []) ->
-    Define (nameString n) (hseToExpr e)
+    Define (snd (nameString n)) (hseToExpr e)
   HSE.FunBind [HSE.Match _ n ps Nothing (HSE.UnGuardedRhs e) (HSE.BDecls [])] ->
-    Define (nameString n) (foldr (\p x -> Lambda (hseToPattern p) x) (hseToExpr e) ps)
+    Define (snd (nameString n)) (foldr (\p x -> Lambda (hseToPattern p) x) (hseToExpr e) ps)
   _ -> todo dec
 
 hseToPattern :: HSE.Pat -> Pattern
 hseToPattern pat = case pat of
-  HSE.PVar n -> PVar (nameString n)
+  HSE.PVar n -> PVar (snd (nameString n))
   HSE.PInfixApp l (HSE.Special HSE.Cons) r -> PCons (hseToPattern l) (hseToPattern r)
   HSE.PTuple [p,q] -> PTuple (hseToPattern p) (hseToPattern q)
   HSE.PParen p -> hseToPattern p
