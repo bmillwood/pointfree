@@ -32,12 +32,17 @@ opString :: HSE.QOp -> String
 opString (HSE.QVarOp qn) = qnameString qn
 opString (HSE.QConOp qn) = qnameString qn
 
+list :: [Expr] -> Expr
+list = foldr (\y ys -> cons `App` y `App` ys) nil
+
 hseToExpr :: HSE.Exp -> Expr
 hseToExpr expr = case expr of
   HSE.Var qn -> Var Pref (qnameString qn)
   HSE.IPVar{} -> todo expr
   HSE.Con qn -> Var Pref (qnameString qn)
-  HSE.Lit l -> Var Pref (HSE.prettyPrint l)
+  HSE.Lit l -> case l of
+    HSE.String s -> list (map (Var Pref . show) s)
+    _ -> Var Pref (HSE.prettyPrint l)
   HSE.InfixApp p op q -> apps (Var Inf (opString op)) [p,q]
   HSE.App f x -> hseToExpr f `App` hseToExpr x
   HSE.NegApp e -> Var Pref "negate" `App` hseToExpr e
@@ -52,7 +57,7 @@ hseToExpr expr = case expr of
   HSE.Tuple es -> foldl (\a x -> a `App` hseToExpr x)
     (Var Pref (replicate (length es - 1) ','))  es
   HSE.TupleSection{} -> todo expr
-  HSE.List xs -> foldr (\y ys -> cons `App` hseToExpr y `App` ys) nil xs
+  HSE.List xs -> list (map hseToExpr xs)
   HSE.Paren e -> hseToExpr e
   HSE.LeftSection l op -> Var Inf (opString op) `App` hseToExpr l
   HSE.RightSection op r -> flip' `App` Var Inf (opString op) `App` hseToExpr r
