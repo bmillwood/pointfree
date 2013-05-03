@@ -58,7 +58,7 @@ toSExpr (App e1 e2) = case e1 of
   App (Var _ "flip") (Var pr v)
     | v == "-"  -> toSExpr $ Var Pref "subtract" `App` e2
     | v == "id" -> RightSection "$" (toSExpr e2)
-    | Inf <- pr -> RightSection v (toSExpr e2)
+    | Inf <- pr, any (/= ',') v -> RightSection v (toSExpr e2)
   _ -> SApp (toSExpr e1) (toSExpr e2)
 
 getHead :: Expr -> Maybe (String, [Expr])
