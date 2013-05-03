@@ -19,7 +19,7 @@ import qualified Data.Map as M
 import Control.Monad
 import Control.Arrow (first, second, (***), (&&&), (|||), (+++))
 
-import Text.ParserCombinators.Parsec.Expr (Assoc(..))
+import Language.Haskell.Exts (Assoc(..))
 
 import GHC.Base (assert)
 

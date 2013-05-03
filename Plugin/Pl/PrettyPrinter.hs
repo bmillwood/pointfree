@@ -129,12 +129,6 @@ getInfName str = if isOperator str then str else "`"++str++"`"
 getPrefName :: String -> String
 getPrefName str = if isOperator str || ',' `elem` str then "("++str++")" else str
 
-instance Eq Assoc where
-  AssocLeft  == AssocLeft  = True
-  AssocRight == AssocRight = True
-  AssocNone  == AssocNone  = True
-  _          == _          = False
-
 {-
 instance Show Assoc where
   show AssocLeft  = "AssocLeft"

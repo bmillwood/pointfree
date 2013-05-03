@@ -32,7 +32,8 @@ Executable pointfree
   Build-depends: base >= 3 && < 4.7,
                  array >= 0.3 && < 0.5,
                  containers >= 0.3 && < 0.6,
-                 parsec >= 2 && < 3.2,
+                 -- probably the below could be more generous
+                 haskell-src-exts == 1.13.*,
                  mtl >= 2 && < 2.2
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
