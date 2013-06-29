@@ -6,6 +6,7 @@ import Test.QuickCheck
 import Plugin.Pl.Common
 import Plugin.Pl.Transform
 import Plugin.Pl.Parser
+import Plugin.Pl.PrettyPrinter
 import Plugin.Pl.Optimize
 
 import Data.List ((\\))
@@ -48,7 +49,7 @@ arbVar = oneof [(Var Pref . return) `fmap` choose ('a','z'),
                 (Var Inf .  return) `fmap` elements (opchars\\"=|@")]
 
 propRoundTrip :: Expr -> Bool
-propRoundTrip e = Right (TLE e) == parsePF (show e)
+propRoundTrip e = Right (TLE e) == parsePF (prettyExpr e)
 
 propMonotonic1 :: Expr -> Expr -> Expr -> Bool
 propMonotonic1 e e1 e2 = App e e1 `compare` App e e2 == e1 `compare` e2
@@ -88,7 +89,7 @@ pf inp = case parsePF inp of
   Left err -> putStrLn $ err
 
 pf' :: String -> IO ()
-pf' = putStrLn . (id ||| show) . parsePF
+pf' = putStrLn . (id ||| prettyTopLevel) . parsePF
 
 unitTest :: String -> [String] -> Test
 unitTest inp out = TestCase $ do
@@ -96,7 +97,7 @@ unitTest inp out = TestCase $ do
     Right x -> return x
     Left err -> fail $ "Parse error on input " ++ inp ++ ": " ++ err
   let d' = mapTopLevel (last . optimize . transform) d
-  foldr1 mplus [assertEqual (inp++" failed.") o (show d') | o <- out]
+  foldr1 mplus [assertEqual (inp++" failed.") o (prettyTopLevel d') | o <- out]
 
 unitTests :: Test
 unitTests = TestList [

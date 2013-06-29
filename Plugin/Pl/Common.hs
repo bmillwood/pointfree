@@ -43,20 +43,20 @@ data Expr
   | Lambda Pattern Expr
   | App Expr Expr
   | Let [Decl] Expr
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 data Pattern
   = PVar String 
   | PCons Pattern Pattern
   | PTuple Pattern Pattern
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 data Decl = Define { 
   declName :: String, 
   declExpr :: Expr
-} deriving (Eq, Ord)
+} deriving (Eq, Ord, Show)
 
-data TopLevel = TLD Bool Decl | TLE Expr deriving (Eq, Ord)
+data TopLevel = TLD Bool Decl | TLE Expr deriving (Eq, Ord, Show)
 
 mapTopLevel :: (Expr -> Expr) -> TopLevel -> TopLevel
 mapTopLevel f tl = case getExpr tl of (e, c) -> c $ f e

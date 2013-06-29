@@ -5,7 +5,7 @@ module Plugin.Pl.Optimize (
 
 import Plugin.Pl.Common
 import Plugin.Pl.Rules
-import Plugin.Pl.PrettyPrinter ()
+import Plugin.Pl.PrettyPrinter (prettyExpr)
 
 import Data.List (nub)
 
@@ -20,7 +20,7 @@ type Size = Integer
 -- This seems to be a better size for our purposes,
 -- despite being "a little" slower because of the wasteful uglyprinting
 sizeExpr' :: Expr -> Size 
-sizeExpr' e = 100 * fromIntegral (length $ show e) + adjust e where
+sizeExpr' e = 100 * fromIntegral (length $ prettyExpr e) + adjust e where
   -- hackish thing to favor some expressions if the length is the same:
   -- (+ x) --> (x +)
   -- x >>= f --> f =<< x

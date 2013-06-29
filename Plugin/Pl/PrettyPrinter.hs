@@ -1,18 +1,26 @@
 {-# LANGUAGE PatternGuards #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-module Plugin.Pl.PrettyPrinter (Expr) where
-
--- Dummy export to make ghc -Wall happy
+module Plugin.Pl.PrettyPrinter (
+  prettyDecl,
+  prettyExpr,
+  prettyTopLevel,
+ ) where
 
 import Plugin.Pl.Common
 
-instance Show Decl where
-  show (Define f e) = f ++ " = " ++ show e
-  showList ds = (++) $ concat $ intersperse "; " $ map show ds
+import Data.List (intercalate)
 
-instance Show TopLevel where
-  showsPrec p (TLE e) = showsPrec p e
-  showsPrec p (TLD _ d) = showsPrec p d
+prettyDecl :: Decl -> String
+prettyDecl (Define f e) = f ++ " = " ++ prettyExpr e
+
+prettyDecls :: [Decl] -> String
+prettyDecls = intercalate "; " . map prettyDecl
+
+prettyExpr :: Expr -> String
+prettyExpr = show . toSExpr
+
+prettyTopLevel :: TopLevel -> String
+prettyTopLevel (TLE e) = prettyExpr e
+prettyTopLevel (TLD _ d) = prettyDecl d
 
 data SExpr
   = SVar !String
@@ -66,13 +74,10 @@ getHead (Var _ v) = Just (v, [])
 getHead (App e1 e2) = second (e2:) `fmap` getHead e1
 getHead _ = Nothing
 
-instance Show Expr where
-  showsPrec p = showsPrec p . toSExpr
-
 instance Show SExpr where
   showsPrec _ (SVar v) = (getPrefName v ++)
   showsPrec p (SLambda vs e) = showParen (p > minPrec) $ ('\\':) . 
-    foldr (.) id (intersperse (' ':) (map (showsPrec $ maxPrec+1) vs)) .
+    foldr (.) id (intersperse (' ':) (map (prettyPrecPattern $ maxPrec+1) vs)) .
     (" -> "++) . showsPrec minPrec e
   showsPrec p (SApp e1 e2) = showParen (p > maxPrec) $
     showsPrec maxPrec e1 . (' ':) . showsPrec (maxPrec+1) e2
@@ -89,11 +94,11 @@ instance Show SExpr where
       (concat `id` intersperse ", " (map show es) ++) . (']':)
     where fromSVar (SVar str) = Just str
           fromSVar _          = Nothing
-  showsPrec _ (Enum fr tn to) = ('[':) . shows fr . 
-    showsMaybe (((',':) . show) `fmap` tn) . (".."++) . 
-    showsMaybe (show `fmap` to) . (']':)
+  showsPrec _ (Enum fr tn to) = ('[':) . showString (prettyExpr fr) . 
+    showsMaybe (((',':) . prettyExpr) `fmap` tn) . (".."++) . 
+    showsMaybe (prettyExpr `fmap` to) . (']':)
       where showsMaybe = maybe id (++)
-  showsPrec _ (SLet ds e) = ("let "++) . shows ds . (" in "++) . shows e
+  showsPrec _ (SLet ds e) = ("let "++) . showString (prettyDecls ds ++ " in ") . shows e
 
 
   showsPrec p (SInfix fx e1 e2) = showParen (p > fixity) $
@@ -113,12 +118,12 @@ instance Show SExpr where
         | otherwise = 0
       infixSafe _ _ _ = 0 -- doesn't matter
 
-instance Show Pattern where
-  showsPrec _ (PVar v) = (v++)
-  showsPrec _ (PTuple p1 p2) = showParen True $
-    showsPrec 0 p1 . (", "++) . showsPrec 0 p2
-  showsPrec p (PCons p1 p2) = showParen (p>5) $
-    showsPrec 6 p1 . (':':) . showsPrec 5 p2
+prettyPrecPattern :: Int -> Pattern -> ShowS
+prettyPrecPattern _ (PVar v) = showString v
+prettyPrecPattern _ (PTuple p1 p2) = showParen True $
+  prettyPrecPattern 0 p1 . (", "++) . prettyPrecPattern 0 p2
+prettyPrecPattern p (PCons p1 p2) = showParen (p>5) $
+  prettyPrecPattern 6 p1 . (':':) . prettyPrecPattern 5 p2
   
 isOperator :: String -> Bool
 isOperator = all (`elem` opchars)
