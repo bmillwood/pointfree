@@ -3,6 +3,7 @@ module Main where
 import Plugin.Pl.Common
 import Plugin.Pl.Optimize
 import Plugin.Pl.Parser
+import Plugin.Pl.PrettyPrinter
 import Plugin.Pl.Transform
 
 import System.Environment (getArgs)
@@ -39,9 +40,9 @@ pf input verbose = case parsePF input of
     if verbose
        then do putStrLn "Transformed to pointfree style:"
                let d' = mapTopLevel transform d
-               print $ d'
+               putStrLn $ prettyTopLevel d'
                putStrLn "Optimized expression:"
-               mapM_ print $ mapTopLevel' optimize d'
-       else print $ last $ mapTopLevel' optimize $ mapTopLevel transform d
+               mapM_ (putStrLn . prettyTopLevel) $ mapTopLevel' optimize d'
+       else putStrLn . prettyTopLevel . last . mapTopLevel' optimize $ mapTopLevel transform d
   Left err -> putStrLn err
 
