@@ -1,8 +1,3 @@
---
--- Todo, use Language.Haskell
---
--- Doesn't handle string literals?
---
 module Plugin.Pl.Parser (parsePF) where
 
 import Plugin.Pl.Common
