@@ -1,4 +1,4 @@
-Cabal-Version: >= 1.6
+Cabal-Version: >= 1.8
 
 Name:     pointfree
 Version:  1.0.4.3
@@ -15,7 +15,7 @@ License:      OtherLicense
 License-file: LICENSE
 
 Build-type:         Simple
-Extra-source-files: ChangeLog README test/Makefile test/Test.hs
+Extra-source-files: ChangeLog README test/Test.hs
 
 Source-repository head
   type:     git
