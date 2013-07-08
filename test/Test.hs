@@ -1,4 +1,4 @@
-module Main where
+module Main (main) where
 
 import Test.HUnit
 import Test.QuickCheck
@@ -57,19 +57,6 @@ propMonotonic1 e e1 e2 = App e e1 `compare` App e e2 == e1 `compare` e2
 propMonotonic2 :: Expr -> Expr -> Expr -> Bool
 propMonotonic2 e e1 e2 = App e1 e `compare` App e2 e == e1 `compare` e2
 
-sizeTest :: IO ()
-sizeTest = quickCheck $ \e -> collect (sizeExpr e) (propRoundTrip e)
-
-quick :: Args
-quick = stdArgs
-  { maxSuccess = 100
-  , maxDiscardRatio = 10
-  , maxSize    = 40
-  }
-
-myTest :: IO ()
-myTest = quickCheckWith quick propRoundTrip
-
 qcTests :: IO ()
 qcTests = do
   quickCheck propRoundTrip
@@ -87,9 +74,6 @@ pf inp = case parsePF inp of
     putStrLn "Optimized expression:"
     mapM_ print $ mapTopLevel' optimize d'
   Left err -> putStrLn $ err
-
-pf' :: String -> IO ()
-pf' = putStrLn . (id ||| prettyTopLevel) . parsePF
 
 unitTest :: String -> [String] -> Test
 unitTest inp out = TestCase $ do
