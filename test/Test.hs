@@ -96,8 +96,15 @@ unitTest inp out = TestCase $ do
   d <- case parsePF inp of
     Right x -> return x
     Left err -> fail $ "Parse error on input " ++ inp ++ ": " ++ err
-  let d' = mapTopLevel (last . optimize . transform) d
-  foldr1 mplus [assertEqual (inp++" failed.") o (prettyTopLevel d') | o <- out]
+  let res = prettyTopLevel (mapTopLevel (last . optimize . transform) d)
+  case out of
+    [] -> error "Test case expected result missing!"
+    [x] -> assertEqual (inp ++ " failed.") x res
+    _ -> assertBool
+      (concat [inp, " failed.",
+        "\nexpected one of:\n", show out,
+        "\n        but got:\n", show res])
+      (res `elem` out)
 
 unitTests :: Test
 unitTests = TestList [

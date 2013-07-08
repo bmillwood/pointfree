@@ -9,7 +9,7 @@ import Plugin.Pl.PrettyPrinter ()
 import qualified Data.Map as M
 
 import Data.Graph (stronglyConnComp, flattenSCC, flattenSCCs)
-import Control.Monad.State
+import Control.Monad.Trans.State
 
 {-
 nub :: Ord a => [a] -> [a]
