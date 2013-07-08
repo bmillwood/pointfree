@@ -1,3 +1,8 @@
+v1.0.4.4:
+* Replace custom parser with HSE parser, fixing many bugs
+* Dependency update for GHC 7.6
+* Use cabal's test-suite stuff
+
 v1.0.4.3:
 * Dependency update for GHC 7.4
 
