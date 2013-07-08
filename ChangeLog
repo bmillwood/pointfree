@@ -1,3 +1,9 @@
+v1.0.4.5:
+* Fix using show when I meant prettyprint
+* Fix testsuite dependencies
+* Replace mtl dep with transformers
+* Broaden HSE dep version range
+
 v1.0.4.4:
 * Replace custom parser with HSE parser, fixing many bugs
 * Dependency update for GHC 7.6

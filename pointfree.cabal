@@ -1,7 +1,7 @@
 Cabal-Version: >= 1.8
 
 Name:     pointfree
-Version:  1.0.4.4
+Version:  1.0.4.5
 Category: Tool
 Synopsis: Tool for refactoring expressions into pointfree form
 
