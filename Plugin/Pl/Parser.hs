@@ -49,7 +49,7 @@ hseToExpr expr = case expr of
   HSE.Case{} -> todo expr
   HSE.Do{} -> todo expr
   HSE.MDo{} -> todo expr
-  HSE.Tuple es -> apps (Var Inf (replicate (length es - 1) ','))  es
+  HSE.Tuple HSE.Boxed es -> apps (Var Inf (replicate (length es - 1) ','))  es
   HSE.TupleSection{} -> todo expr
   HSE.List xs -> list (map hseToExpr xs)
   HSE.Paren e -> hseToExpr e
@@ -78,7 +78,7 @@ hseToPattern :: HSE.Pat -> Pattern
 hseToPattern pat = case pat of
   HSE.PVar n -> PVar (snd (nameString n))
   HSE.PInfixApp l (HSE.Special HSE.Cons) r -> PCons (hseToPattern l) (hseToPattern r)
-  HSE.PTuple [p,q] -> PTuple (hseToPattern p) (hseToPattern q)
+  HSE.PTuple HSE.Boxed [p,q] -> PTuple (hseToPattern p) (hseToPattern q)
   HSE.PParen p -> hseToPattern p
   HSE.PWildCard -> PVar "_"
   _ -> todo pat
