@@ -1,7 +1,7 @@
 Cabal-Version: >= 1.8
 
 Name:     pointfree
-Version:  1.0.4.5
+Version:  1.0.4.6
 Category: Tool
 Synopsis: Tool for refactoring expressions into pointfree form
 
@@ -31,11 +31,11 @@ Executable pointfree
                  ImplicitParams,
                  PatternGuards,
                  ScopedTypeVariables
-  Build-depends: base >= 3 && < 4.7,
-                 array >= 0.3 && < 0.5,
+  Build-depends: base >= 3 && < 4.8,
+                 array >= 0.3 && < 0.6,
                  containers >= 0.3 && < 0.6,
                  -- probably the below could be more generous
-                 haskell-src-exts >= 1.11 && < 1.14,
+                 haskell-src-exts >= 1.11 && < 1.15,
                  transformers < 0.4
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -51,12 +51,12 @@ Test-suite tests
   Other-modules:
 
   Build-depends:
-    array >= 0.3 && < 0.5,
+    array >= 0.3 && < 0.6,
     base < 5,
     containers >= 0.3 && < 0.6,
-    haskell-src-exts >= 1.11 && < 1.14,
+    haskell-src-exts >= 1.11 && < 1.15,
     HUnit >= 1.1 && < 1.3,
-    QuickCheck >= 2.1 && < 2.7,
+    QuickCheck >= 2.1 && < 2.8,
     transformers < 0.4
 
   Extensions:
