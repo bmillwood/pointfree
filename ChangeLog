@@ -1,3 +1,7 @@
+v1.0.4.6:
+* Dependency update for GHC 7.8
+* Comment out tests that never worked
+
 v1.0.4.5:
 * Fix using show when I meant prettyprint
 * Fix testsuite dependencies
