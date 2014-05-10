@@ -34,8 +34,8 @@ Executable pointfree
   Build-depends: base >= 4.3 && < 4.8,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
-                 haskell-src-exts == 1.14.*,
-                 transformers < 0.4
+                 haskell-src-exts >= 1.14 && < 1.16,
+                 transformers < 0.5
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
                  Plugin.Pl.PrettyPrinter
