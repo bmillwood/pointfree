@@ -1,3 +1,6 @@
+v1.0.4.7:
+* Dependency update for HSE 1.15 and transformers 0.4
+
 v1.0.4.6:
 * Dependency update for GHC 7.8
 * Comment out tests that never worked
