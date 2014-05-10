@@ -16,14 +16,6 @@ commands like
 
 :pf \x y -> x + y
 
-Status
-======
-
-Not all of the testsuite passes, but one failure is due to a bug in HSE (see 
-http://code.google.com/p/haskell-src-exts/issues/detail?id=24 ) and many of the 
-others I'm not sure if they ever succeeded, and are mostly failures to 
-optimise, rather than actual correctness bugs.
-
 Future directions
 =================
 
