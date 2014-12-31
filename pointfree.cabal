@@ -31,7 +31,7 @@ Executable pointfree
                  ImplicitParams,
                  PatternGuards,
                  ScopedTypeVariables
-  Build-depends: base >= 4.3 && < 4.8,
+  Build-depends: base >= 4.3 && < 4.9,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
                  haskell-src-exts == 1.16.*,
