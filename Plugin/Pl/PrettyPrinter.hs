@@ -7,6 +7,7 @@ module Plugin.Pl.PrettyPrinter (
 
 import Plugin.Pl.Common
 
+import Data.Char
 import Data.List (intercalate)
 
 prettyDecl :: Decl -> String
@@ -126,7 +127,7 @@ prettyPrecPattern p (PCons p1 p2) = showParen (p>5) $
   prettyPrecPattern 6 p1 . (':':) . prettyPrecPattern 5 p2
   
 isOperator :: String -> Bool
-isOperator = all (`elem` opchars)
+isOperator s = s /= "()" && all (\c -> isSymbol c || isPunctuation c) s
 
 getInfName :: String -> String
 getInfName str = if isOperator str then str else "`"++str++"`"

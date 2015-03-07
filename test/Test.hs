@@ -46,7 +46,7 @@ instance Arbitrary Pattern where
 
 arbVar :: Gen Expr
 arbVar = oneof [(Var Pref . return) `fmap` choose ('a','z'), 
-                (Var Inf .  return) `fmap` elements (opchars\\"=|@")]
+                (Var Inf .  return) `fmap` elements "!#$%^*./-+:?<>&"]
 
 propRoundTrip :: Expr -> Bool
 propRoundTrip e = Right (TLE e) == parsePF (prettyExpr e)
@@ -184,7 +184,8 @@ unitTests = TestList [
   unitTest "p x = product [1,2,3,x]" ["p = (6 *)"],
   unitTest "(concat .) . map" ["(=<<)"],
   unitTest "let f ((a,b),(c,d)) = a + b + c + d in f ((1,2),(3,4))" ["10"],
-  unitTest "let x = const 3 y; y = const 4 x in x + y" ["7"] -- yay!
+  unitTest "let x = const 3 y; y = const 4 x in x + y" ["7"], -- yay!
+  unitTest "(\\n -> (return 0) ± (return $ sqrt n))" ["(return 0 ±) . return . sqrt"]
   ]
 
 main :: IO ()

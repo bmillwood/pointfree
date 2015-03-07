@@ -1,7 +1,7 @@
 module Plugin.Pl.Common (
         Fixity(..), Expr(..), Pattern(..), Decl(..), TopLevel(..),
         bt, sizeExpr, mapTopLevel, mapTopLevel', getExpr,
-        operators, opchars, reservedOps, lookupOp, lookupFix, minPrec, maxPrec,
+        operators, reservedOps, lookupOp, lookupFix, minPrec, maxPrec,
         comp, flip', id', const', scomb, cons, nil, fix', if', readM,
         makeList, getList,
         Assoc(..),
@@ -121,9 +121,6 @@ operators = (map . map . second . second $ (+shift))
    [inf name AssocRight 0 | name <- ["$", "$!", "`seq`"]]
   ] where
   inf name assoc fx = (name, (assoc, fx))
-
-opchars :: [Char]
-opchars = "!@#$%^*./|=-+:?<>&"
 
 reservedOps :: [String]
 reservedOps = ["->", "..", "="]
