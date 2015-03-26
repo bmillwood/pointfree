@@ -10,10 +10,13 @@ import System.Environment (getArgs)
 import System.Console.GetOpt
 
 data Flag = Verbose 
+          | StdIn
   deriving Eq
 
 options :: [OptDescr Flag]
-options = [ Option ['v'] ["verbose"] (NoArg Verbose) "verbose results"]
+options = [ Option ['v'] ["verbose"] (NoArg Verbose) "verbose results"
+          , Option []    ["stdin"]   (NoArg StdIn)   "read from stdin"
+          ]
 
 header :: String
 header = "Usage: pointfree [OPTION...] query"
@@ -24,14 +27,19 @@ parseArgs args =
     (flags, nonOptions, []) -> return (flags, nonOptions)
     (_, _, errs) -> ioError (userError (concat errs ++ usageInfo header options))
 
+getQuery :: [Flag] -> [String] -> IO String
+getQuery flags nonOptions
+  | StdIn `elem` flags = getLine
+  | otherwise          = return $ unwords nonOptions
+
 main :: IO ()
 main = do
   args <- getArgs
   (flags, nonOptions) <- parseArgs args
-  if null nonOptions
+  query <- getQuery flags nonOptions
+  if null query
      then putStrLn $ usageInfo header options
-     else let query = concat $ intersperse " " nonOptions
-              verbose = Verbose `elem` flags
+     else let verbose = Verbose `elem` flags
           in pf query verbose
 
 pf :: String -> Bool -> IO ()
