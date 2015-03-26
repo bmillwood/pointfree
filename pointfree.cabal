@@ -23,6 +23,21 @@ Source-repository head
   type:     git
   location: git://github.com/benmachine/pointfree.git
 
+library
+    Exposed-modules: Pointfree
+    Build-depends: base >= 4.3 && < 4.9,
+                   array >= 0.3 && < 0.6,
+                   containers >= 0.4 && < 0.6,
+                   haskell-src-exts == 1.16.*,
+                   transformers < 0.5
+    Other-modules: Plugin.Pl.Common
+                   Plugin.Pl.Parser
+                   Plugin.Pl.PrettyPrinter
+                   Plugin.Pl.Optimize
+                   Plugin.Pl.Rules
+                   Plugin.Pl.Transform
+    GHC-options: -Wall
+
 Executable pointfree
   Main-is:       Main.hs
   GHC-options:   -Wall
