@@ -19,5 +19,4 @@ commands like
 Future directions
 =================
 
-It would be nice to make pointfree a library that operated on ASTs, or at the 
-very least on strings.
+It would be nice to make pointfree a library that operated on ASTs.
