@@ -23,29 +23,25 @@ Source-repository head
   type:     git
   location: git://github.com/benmachine/pointfree.git
 
-library
-    Exposed-modules: Pointfree
-    Build-depends: base >= 4.5 && < 4.9,
-                   array >= 0.3 && < 0.6,
-                   containers >= 0.4 && < 0.6,
-                   haskell-src-exts == 1.16.*,
-                   transformers < 0.5
-    Other-modules: Plugin.Pl.Common
-                   Plugin.Pl.Parser
-                   Plugin.Pl.PrettyPrinter
-                   Plugin.Pl.Optimize
-                   Plugin.Pl.Rules
-                   Plugin.Pl.Transform
-    GHC-options: -Wall
+Library
+  Exposed-modules: Pointfree
+
+  Build-depends: base >= 4.5 && < 4.9,
+                 array >= 0.3 && < 0.6,
+                 containers >= 0.4 && < 0.6,
+                 haskell-src-exts == 1.16.*,
+                 transformers < 0.5
+  Other-modules: Plugin.Pl.Common
+                 Plugin.Pl.Parser
+                 Plugin.Pl.PrettyPrinter
+                 Plugin.Pl.Optimize
+                 Plugin.Pl.Rules
+                 Plugin.Pl.Transform
+  GHC-options: -W
 
 Executable pointfree
   Main-is:       Main.hs
-  GHC-options:   -Wall
-  Extensions:    ExistentialQuantification,
-                 FlexibleInstances,
-                 ImplicitParams,
-                 PatternGuards,
-                 ScopedTypeVariables
+  GHC-options:   -W
   Build-depends: base >= 4.3 && < 4.9,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
@@ -73,12 +69,5 @@ Test-suite tests
     QuickCheck >= 2.1 && < 2.9,
     transformers < 0.5
 
-  Extensions:
-    ExistentialQuantification
-    FlexibleInstances
-    ImplicitParams
-    PatternGuards
-    ScopedTypeVariables
-
-  GHC-Options:    -Wall
+  GHC-Options:    -W
   Hs-source-dirs: . test

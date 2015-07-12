@@ -9,7 +9,6 @@ import Plugin.Pl.Parser
 import Plugin.Pl.PrettyPrinter
 import Plugin.Pl.Optimize
 
-import Data.List ((\\))
 import Data.Char (isSpace)
 
 import System.IO (hSetBuffering, stdout, BufferMode(NoBuffering))

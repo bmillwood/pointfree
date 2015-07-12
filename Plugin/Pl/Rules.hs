@@ -1,5 +1,6 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 --
 -- | This marvellous module contributed by Thomas J\344ger
