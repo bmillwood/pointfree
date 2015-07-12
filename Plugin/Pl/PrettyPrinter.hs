@@ -127,7 +127,17 @@ prettyPrecPattern p (PCons p1 p2) = showParen (p>5) $
   prettyPrecPattern 6 p1 . (':':) . prettyPrecPattern 5 p2
   
 isOperator :: String -> Bool
-isOperator s = s /= "()" && all (\c -> isSymbol c || isPunctuation c) s
+isOperator s =
+  case break (== '.') s of
+    (_, "") -> isUnqualOp s
+    (before, _dot : rest)
+      | isUnqualOp before -> isUnqualOp rest
+      | isModule before -> isOperator rest
+      | otherwise -> False
+  where
+    isModule "" = False
+    isModule (c : cs) = isUpper c && all (\c -> isAlphaNum c || c `elem` ['\'', '_']) cs
+    isUnqualOp s = s /= "()" && all (\c -> isSymbol c || isPunctuation c) s
 
 getInfName :: String -> String
 getInfName str = if isOperator str then str else "`"++str++"`"

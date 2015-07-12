@@ -12,7 +12,7 @@ nameString (HSE.Ident s) = (Pref, s)
 nameString (HSE.Symbol s) = (Inf, s)
 
 qnameString :: HSE.QName -> (Fixity, String)
-qnameString (HSE.Qual m n) = fmap (HSE.prettyPrint m ++) (nameString n)
+qnameString (HSE.Qual m n) = fmap ((HSE.prettyPrint m ++ ".") ++) (nameString n)
 qnameString (HSE.UnQual n) = nameString n
 qnameString (HSE.Special sc) = case sc of
   HSE.UnitCon -> (Pref, "()")
