@@ -1,3 +1,6 @@
+v1.1.1:
+* Fix some bugs in qualified operator handling
+
 v1.1:
 * Drop support for GHC 7.0 and 7.2 (actually already lost with HSE 1.16)
 * Add support for GHC 7.10.1
