@@ -28,7 +28,7 @@ library
     Build-depends: base >= 4.5 && < 4.9,
                    array >= 0.3 && < 0.6,
                    containers >= 0.4 && < 0.6,
-                   haskell-src-exts == 1.16.*,
+                   haskell-src-exts == 1.17.*,
                    transformers < 0.5
     Other-modules: Plugin.Pl.Common
                    Plugin.Pl.Parser
@@ -49,7 +49,7 @@ Executable pointfree
   Build-depends: base >= 4.3 && < 4.9,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
-                 haskell-src-exts == 1.16.*,
+                 haskell-src-exts == 1.17.*,
                  transformers < 0.5
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -68,7 +68,7 @@ Test-suite tests
     array >= 0.3 && < 0.6,
     base < 5,
     containers >= 0.3 && < 0.6,
-    haskell-src-exts == 1.16.*,
+    haskell-src-exts == 1.17.*,
     HUnit >= 1.1 && < 1.4,
     QuickCheck >= 2.1 && < 2.9,
     transformers < 0.5
