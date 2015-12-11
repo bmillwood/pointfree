@@ -68,9 +68,9 @@ apps f xs = foldl (\a x -> a `App` hseToExpr x) f xs
 
 hseToDecl :: HSE.Decl -> Decl
 hseToDecl dec = case dec of
-  HSE.PatBind _ (HSE.PVar n) (HSE.UnGuardedRhs e) (HSE.BDecls []) ->
+  HSE.PatBind _ (HSE.PVar n) (HSE.UnGuardedRhs e) (Just (HSE.BDecls [])) ->
     Define (snd (nameString n)) (hseToExpr e)
-  HSE.FunBind [HSE.Match _ n ps Nothing (HSE.UnGuardedRhs e) (HSE.BDecls [])] ->
+  HSE.FunBind [HSE.Match _ n ps Nothing (HSE.UnGuardedRhs e) (Just (HSE.BDecls []))] ->
     Define (snd (nameString n)) (foldr (\p x -> Lambda (hseToPattern p) x) (hseToExpr e) ps)
   _ -> todo dec
 
