@@ -1,3 +1,6 @@
+v1.1.1.2:
+* Dependency update for base 4.9, QuickCheck 2.9
+
 v1.1.1.1:
 * Dependency update for HSE 1.17, transformers 0.5
 * Trim tested-with, I no longer have a working copy of old GHCs
