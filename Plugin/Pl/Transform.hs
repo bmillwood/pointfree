@@ -89,32 +89,64 @@ alphaRename e = alpha e `evalState` M.empty where
 transform :: Expr -> Expr
 transform = transform' . alphaRename . unLet
 
+-- Infinite generator of variable names.
+varNames :: [String]
+varNames = concatMap (flip replicateM usableChars) [1..]
+  where
+    usableChars = ['a'..'z']
+
+-- First variable name not already in use
+fresh :: [String] -> String
+fresh variables = head . filter (not . flip elem variables) $ varNames
+
+names :: Pattern -> [String]
+names (PVar str)         = [str]
+names (PCons pat0 pat1)  = names pat0 ++ names pat1
+names (PTuple pat0 pat1) = names pat0 ++ names pat1
+
 transform' :: Expr -> Expr
-transform' (Let {}) = assert False bt
-transform' (Var f v) = Var f v
-transform' (App e1 e2) = App (transform' e1) (transform' e2)
-transform' (Lambda (PTuple p1 p2) e) 
-  = transform' $ Lambda (PVar "z") $ 
-      (Lambda p1 $ Lambda p2 $ e) `App` f `App` s where
-    f = Var Pref "fst" `App` Var Pref "z"
-    s = Var Pref "snd" `App` Var Pref "z"
-transform' (Lambda (PCons p1 p2) e) 
-  = transform' $ Lambda (PVar "z") $ 
-      (Lambda p1 $ Lambda p2 $ e) `App` f `App` s where
-    f = Var Pref "head" `App` Var Pref "z"
-    s = Var Pref "tail" `App` Var Pref "z"
-transform' (Lambda (PVar v) e) = transform' $ getRidOfV e where
-  getRidOfV (Var f v') | v == v'   = id'
-                       | otherwise = const' `App` Var f v'
-  getRidOfV l@(Lambda pat _) = assert (not $ v `occursP` pat) $ 
-    getRidOfV $ transform' l
-  getRidOfV (Let {}) = assert False bt
-  getRidOfV e'@(App e1 e2) 
-    | fr1 && fr2 = scomb `App` getRidOfV e1 `App` getRidOfV e2
-    | fr1 = flip' `App` getRidOfV e1 `App` e2
-    | Var _ v' <- e2, v' == v = e1
-    | fr2 = comp `App` e1 `App` getRidOfV e2
-    | True = const' `App` e'
-    where
-      fr1 = v `isFreeIn` e1
-      fr2 = v `isFreeIn` e2
+transform' = go []
+  where
+    go _ (Let {}) =
+      assert False bt
+    go _ (Var f v) =
+      Var f v
+    go vars (App e1 e2) =
+      App (go vars e1) (go vars e2)
+    go vars (Lambda (PTuple p1 p2) e) =
+      go vars' $
+        Lambda (PVar var) $ (Lambda p1 . Lambda p2 $ e) `App` f `App` s
+      where
+        vars' = names p1 ++ names p2 ++ vars
+        var   = fresh vars'
+        f     = Var Pref "fst" `App` Var Pref var
+        s     = Var Pref "snd" `App` Var Pref var
+    go vars (Lambda (PCons p1 p2) e) =
+      go vars' $
+        Lambda (PVar var) $ (Lambda p1 . Lambda p2 $ e) `App` f `App` s
+      where
+        vars' = names p1 ++ names p2 ++ vars
+        var = fresh []
+        f   = Var Pref "head" `App` Var Pref var
+        s   = Var Pref "tail" `App` Var Pref var
+    go vars (Lambda (PVar v) e) =
+      go vars' $ getRidOfV e
+      where
+        vars' = v : vars
+
+        getRidOfV (Var f v') | v == v'   = id'
+                             | otherwise = const' `App` Var f v'
+        getRidOfV l@(Lambda pat _) =
+          assert (not $ v `occursP` pat) $ getRidOfV $ go vars'' l
+          where
+            vars'' = names pat ++ vars'
+        getRidOfV (Let {}) = assert False bt
+        getRidOfV e'@(App e1 e2)
+          | fr1 && fr2 = scomb `App` getRidOfV e1 `App` getRidOfV e2
+          | fr1 = flip' `App` getRidOfV e1 `App` e2
+          | Var _ v' <- e2, v' == v = e1
+          | fr2 = comp `App` e1 `App` getRidOfV e2
+          | True = const' `App` e'
+          where
+            fr1 = v `isFreeIn` e1
+            fr2 = v `isFreeIn` e2
