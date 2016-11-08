@@ -100,14 +100,14 @@ fresh :: [String] -> String
 fresh variables = head . filter (not . flip elem variables) $ varNames
 
 names :: Expr -> [String]
-names (Var _ str)      = [str]
+names (Var _ str)     = [str]
 -- Lambda pattern names are rewritten to be meaningless/unwritable, so we don't
--- need to include them here. Variables from lambdas used in patterns are also
--- rewritten, but there's no reason to special-case it unless it's provably
--- poor-performing
-names (Lambda _ exp) = names exp
-names (App exp1 exp2)  = names exp1 ++ names exp2
-names (Let dlcs exp)   = concatMap dnames dlcs ++ names exp
+-- need to include them here. Variables from lambdas used in expressions are
+-- also rewritten, but there's no reason to special-case it unless it's provably
+-- poor-performing to scan over the result in `fresh`, which I doubt it is.
+names (Lambda _ exp)  = names exp
+names (App exp1 exp2) = names exp1 ++ names exp2
+names (Let dlcs exp)  = concatMap dnames dlcs ++ names exp
   where
     dnames (Define nm exp) = nm : names exp
 
