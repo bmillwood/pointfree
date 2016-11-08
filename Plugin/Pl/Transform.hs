@@ -99,47 +99,51 @@ varNames = concatMap (flip replicateM usableChars) [1..]
 fresh :: [String] -> String
 fresh variables = head . filter (not . flip elem variables) $ varNames
 
-names :: Pattern -> [String]
-names (PVar str)         = [str]
-names (PCons pat0 pat1)  = names pat0 ++ names pat1
-names (PTuple pat0 pat1) = names pat0 ++ names pat1
+names :: Expr -> [String]
+names (Var _ str)      = [str]
+-- Lambda pattern names are rewritten to be meaningless/unwritable, so we don't
+-- need to include them here. Variables from lambdas used in patterns are also
+-- rewritten, but there's no reason to special-case it unless it's provably
+-- poor-performing
+names (Lambda _ exp) = names exp
+names (App exp1 exp2)  = names exp1 ++ names exp2
+names (Let dlcs exp)   = concatMap dnames dlcs ++ names exp
+  where
+    dnames (Define nm exp) = nm : names exp
 
 transform' :: Expr -> Expr
-transform' = go []
+transform' exp = go exp
   where
-    go _ (Let {}) =
+    -- Explicit sharing for readability
+    vars = names exp
+
+    go (Let {}) =
       assert False bt
-    go _ (Var f v) =
+    go (Var f v) =
       Var f v
-    go vars (App e1 e2) =
-      App (go vars e1) (go vars e2)
-    go vars (Lambda (PTuple p1 p2) e) =
-      go vars' $
+    go (App e1 e2) =
+      App (go e1) (go e2)
+    go (Lambda (PTuple p1 p2) e) =
+      go $
         Lambda (PVar var) $ (Lambda p1 . Lambda p2 $ e) `App` f `App` s
       where
-        vars' = names p1 ++ names p2 ++ vars
-        var   = fresh vars'
+        var   = fresh vars
         f     = Var Pref "fst" `App` Var Pref var
         s     = Var Pref "snd" `App` Var Pref var
-    go vars (Lambda (PCons p1 p2) e) =
-      go vars' $
+    go (Lambda (PCons p1 p2) e) =
+      go $
         Lambda (PVar var) $ (Lambda p1 . Lambda p2 $ e) `App` f `App` s
       where
-        vars' = names p1 ++ names p2 ++ vars
-        var = fresh []
+        var = fresh vars
         f   = Var Pref "head" `App` Var Pref var
         s   = Var Pref "tail" `App` Var Pref var
-    go vars (Lambda (PVar v) e) =
-      go vars' $ getRidOfV e
+    go (Lambda (PVar v) e) =
+      go $ getRidOfV e
       where
-        vars' = v : vars
-
         getRidOfV (Var f v') | v == v'   = id'
                              | otherwise = const' `App` Var f v'
         getRidOfV l@(Lambda pat _) =
-          assert (not $ v `occursP` pat) $ getRidOfV $ go vars'' l
-          where
-            vars'' = names pat ++ vars'
+          assert (not $ v `occursP` pat) $ getRidOfV $ go l
         getRidOfV (Let {}) = assert False bt
         getRidOfV e'@(App e1 e2)
           | fr1 && fr2 = scomb `App` getRidOfV e1 `App` getRidOfV e2
