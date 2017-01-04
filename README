@@ -20,3 +20,9 @@ Future directions
 =================
 
 It would be nice to make pointfree a library that operated on ASTs.
+
+Installation
+============
+
+This tool can be installed with Stack:
+`stack install`: create a binary and copy it to ~/.local/bin
