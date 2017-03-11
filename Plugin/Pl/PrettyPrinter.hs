@@ -10,6 +10,8 @@ import Plugin.Pl.Common
 import Data.Char
 import Data.List (intercalate)
 
+import qualified Language.Haskell.Exts.SrcLoc as HSE
+
 prettyDecl :: Decl -> String
 prettyDecl (Define f e) = f ++ " = " ++ prettyExpr e
 
@@ -107,13 +109,13 @@ instance Show SExpr where
     showsPrec f2 e2 where
       fixity = snd $ lookupFix fx
       (f1, f2) = case fst $ lookupFix fx of
-        AssocRight -> (fixity+1, fixity + infixSafe e2 AssocLeft fixity)
-        AssocLeft  -> (fixity + infixSafe e1 AssocRight fixity, fixity+1)
-        AssocNone  -> (fixity+1, fixity+1)
+        AssocRight _loc -> (fixity+1, fixity + infixSafe e2 (AssocLeft HSE.noSrcSpan) fixity)
+        AssocLeft  _loc -> (fixity + infixSafe e1 (AssocRight HSE.noSrcSpan) fixity, fixity+1)
+        AssocNone  _loc -> (fixity+1, fixity+1)
 
       -- This is a little bit awkward, but at least seems to produce no false
       -- results anymore
-      infixSafe :: SExpr -> Assoc -> Int -> Int
+      infixSafe :: SExpr -> Assoc HSE.SrcSpanInfo -> Int -> Int
       infixSafe (SInfix fx'' _ _) assoc fx'
         | lookupFix fx'' == (assoc, fx') = 1
         | otherwise = 0

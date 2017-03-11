@@ -7,80 +7,80 @@ import qualified Language.Haskell.Exts as HSE
 todo :: (Show e) => e -> a
 todo thing = error ("pointfree: not supported: " ++ show thing)
 
-nameString :: HSE.Name -> (Fixity, String)
-nameString (HSE.Ident s) = (Pref, s)
-nameString (HSE.Symbol s) = (Inf, s)
+nameString :: HSE.Name HSE.SrcSpanInfo -> (Fixity, String)
+nameString (HSE.Ident _loc s) = (Pref, s)
+nameString (HSE.Symbol _loc s) = (Inf, s)
 
-qnameString :: HSE.QName -> (Fixity, String)
-qnameString (HSE.Qual m n) = fmap ((HSE.prettyPrint m ++ ".") ++) (nameString n)
-qnameString (HSE.UnQual n) = nameString n
-qnameString (HSE.Special sc) = case sc of
-  HSE.UnitCon -> (Pref, "()")
-  HSE.ListCon -> (Pref, "[]")
-  HSE.FunCon -> (Inf, "->")
-  HSE.TupleCon HSE.Boxed n -> (Inf, replicate (n-1) ',')
+qnameString :: HSE.QName HSE.SrcSpanInfo -> (Fixity, String)
+qnameString (HSE.Qual _loc m n) = fmap ((HSE.prettyPrint m ++ ".") ++) (nameString n)
+qnameString (HSE.UnQual _loc n) = nameString n
+qnameString (HSE.Special _loc sc) = case sc of
+  HSE.UnitCon _loc -> (Pref, "()")
+  HSE.ListCon _loc -> (Pref, "[]")
+  HSE.FunCon _loc -> (Inf, "->")
+  HSE.TupleCon _loc HSE.Boxed n -> (Inf, replicate (n-1) ',')
   HSE.TupleCon{} -> todo sc
-  HSE.Cons -> (Inf, ":")
-  HSE.UnboxedSingleCon -> todo sc
+  HSE.Cons _loc -> (Inf, ":")
+  HSE.UnboxedSingleCon _loc -> todo sc
 
-opString :: HSE.QOp -> (Fixity, String)
-opString (HSE.QVarOp qn) = qnameString qn
-opString (HSE.QConOp qn) = qnameString qn
+opString :: HSE.QOp HSE.SrcSpanInfo -> (Fixity, String)
+opString (HSE.QVarOp _loc qn) = qnameString qn
+opString (HSE.QConOp _loc qn) = qnameString qn
 
 list :: [Expr] -> Expr
 list = foldr (\y ys -> cons `App` y `App` ys) nil
 
-hseToExpr :: HSE.Exp -> Expr
+hseToExpr :: HSE.Exp HSE.SrcSpanInfo -> Expr
 hseToExpr expr = case expr of
-  HSE.Var qn -> uncurry Var (qnameString qn)
+  HSE.Var _loc qn -> uncurry Var (qnameString qn)
   HSE.IPVar{} -> todo expr
-  HSE.Con qn -> uncurry Var (qnameString qn)
-  HSE.Lit l -> case l of
-    HSE.String s -> list (map (Var Pref . show) s)
+  HSE.Con  _loc qn -> uncurry Var (qnameString qn)
+  HSE.Lit _loc l -> case l of
+    HSE.String _locs s _slit -> list (map (Var Pref . show) s)
     _ -> Var Pref (HSE.prettyPrint l)
-  HSE.InfixApp p op q -> apps (Var Inf (snd (opString op))) [p,q]
-  HSE.App f x -> hseToExpr f `App` hseToExpr x
-  HSE.NegApp e -> Var Pref "negate" `App` hseToExpr e
-  HSE.Lambda _ ps e -> foldr (Lambda . hseToPattern) (hseToExpr e) ps
-  HSE.Let bs e -> case bs of
-    HSE.BDecls ds -> Let (map hseToDecl ds) (hseToExpr e)
-    HSE.IPBinds ips -> todo ips
-  HSE.If b t f -> apps if' [b,t,f]
+  HSE.InfixApp _loc p op q -> apps (Var Inf (snd (opString op))) [p,q]
+  HSE.App _loc f x -> hseToExpr f `App` hseToExpr x
+  HSE.NegApp _loc e -> Var Pref "negate" `App` hseToExpr e
+  HSE.Lambda _loc ps e -> foldr (Lambda . hseToPattern) (hseToExpr e) ps
+  HSE.Let _loc bs e -> case bs of
+    HSE.BDecls _loc ds -> Let (map hseToDecl ds) (hseToExpr e)
+    HSE.IPBinds _loc ips -> todo ips
+  HSE.If _loc b t f -> apps if' [b,t,f]
   HSE.Case{} -> todo expr
   HSE.Do{} -> todo expr
   HSE.MDo{} -> todo expr
-  HSE.Tuple HSE.Boxed es -> apps (Var Inf (replicate (length es - 1) ','))  es
+  HSE.Tuple _loc HSE.Boxed es -> apps (Var Inf (replicate (length es - 1) ','))  es
   HSE.TupleSection{} -> todo expr
-  HSE.List xs -> list (map hseToExpr xs)
-  HSE.Paren e -> hseToExpr e
-  HSE.LeftSection l op -> Var Inf (snd (opString op)) `App` hseToExpr l
-  HSE.RightSection op r -> flip' `App` Var Inf (snd (opString op)) `App` hseToExpr r
+  HSE.List _loc xs -> list (map hseToExpr xs)
+  HSE.Paren _loc e -> hseToExpr e
+  HSE.LeftSection _loc l op -> Var Inf (snd (opString op)) `App` hseToExpr l
+  HSE.RightSection _loc op r -> flip' `App` Var Inf (snd (opString op)) `App` hseToExpr r
   HSE.RecConstr{} -> todo expr
   HSE.RecUpdate{} -> todo expr
-  HSE.EnumFrom x -> apps (Var Pref "enumFrom") [x]
-  HSE.EnumFromTo x y -> apps (Var Pref "enumFromTo") [x,y]
-  HSE.EnumFromThen x y -> apps (Var Pref "enumFromThen") [x,y]
-  HSE.EnumFromThenTo x y z -> apps (Var Pref "enumFromThenTo") [x,y,z]
+  HSE.EnumFrom _loc x -> apps (Var Pref "enumFrom") [x]
+  HSE.EnumFromTo _loc x y -> apps (Var Pref "enumFromTo") [x,y]
+  HSE.EnumFromThen _loc x y -> apps (Var Pref "enumFromThen") [x,y]
+  HSE.EnumFromThenTo _loc x y z -> apps (Var Pref "enumFromThenTo") [x,y,z]
   _ -> todo expr
 
-apps :: Expr -> [HSE.Exp] -> Expr
+apps :: Expr -> [HSE.Exp HSE.SrcSpanInfo] -> Expr
 apps f xs = foldl (\a x -> a `App` hseToExpr x) f xs 
 
-hseToDecl :: HSE.Decl -> Decl
+hseToDecl :: HSE.Decl HSE.SrcSpanInfo -> Decl
 hseToDecl dec = case dec of
-  HSE.PatBind _ (HSE.PVar n) (HSE.UnGuardedRhs e) Nothing ->
+  HSE.PatBind _ (HSE.PVar _loc n) (HSE.UnGuardedRhs _ e) Nothing ->
     Define (snd (nameString n)) (hseToExpr e)
-  HSE.FunBind [HSE.Match _ n ps Nothing (HSE.UnGuardedRhs e) Nothing] ->
+  HSE.FunBind _loc [HSE.Match _ n ps (HSE.UnGuardedRhs _ e) Nothing] ->
     Define (snd (nameString n)) (foldr (\p x -> Lambda (hseToPattern p) x) (hseToExpr e) ps)
   _ -> todo dec
 
-hseToPattern :: HSE.Pat -> Pattern
+hseToPattern :: HSE.Pat HSE.SrcSpanInfo -> Pattern
 hseToPattern pat = case pat of
-  HSE.PVar n -> PVar (snd (nameString n))
-  HSE.PInfixApp l (HSE.Special HSE.Cons) r -> PCons (hseToPattern l) (hseToPattern r)
-  HSE.PTuple HSE.Boxed [p,q] -> PTuple (hseToPattern p) (hseToPattern q)
-  HSE.PParen p -> hseToPattern p
-  HSE.PWildCard -> PVar "_"
+  HSE.PVar _loc n -> PVar (snd (nameString n))
+  HSE.PInfixApp _loc l (HSE.Special _ (HSE.Cons _)) r -> PCons (hseToPattern l) (hseToPattern r)
+  HSE.PTuple _loc HSE.Boxed [p,q] -> PTuple (hseToPattern p) (hseToPattern q)
+  HSE.PParen _loc p -> hseToPattern p
+  HSE.PWildCard _loc -> PVar "_"
   _ -> todo pat
 
 parsePF :: String -> Either String TopLevel
