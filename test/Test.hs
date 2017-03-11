@@ -186,7 +186,9 @@ unitTests = TestList [
   unitTest "let x = const 3 y; y = const 4 x in x + y" ["7"], -- yay!
   unitTest "(\\n -> (return 0) ± (return $ sqrt n))" ["(return 0 ±) . return . sqrt"],
   unitTest "\\b -> (\\c -> ((Control.Monad.>>=) c) (\\g -> Control.Applicative.pure (b g)))"
-    ["flip (Control.Monad.>>=) . (Control.Applicative.pure .)"]
+    ["flip (Control.Monad.>>=) . (Control.Applicative.pure .)"],
+  unitTest "\\(x, y) -> z" ["const z"],
+  unitTest "\\(x, y) -> a" ["const a"]
   ]
 
 main :: IO ()
