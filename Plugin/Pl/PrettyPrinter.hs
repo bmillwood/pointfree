@@ -107,13 +107,13 @@ instance Show SExpr where
     showsPrec f2 e2 where
       fixity = snd $ lookupFix fx
       (f1, f2) = case fst $ lookupFix fx of
-        AssocRight -> (fixity+1, fixity + infixSafe e2 AssocLeft fixity)
-        AssocLeft  -> (fixity + infixSafe e1 AssocRight fixity, fixity+1)
-        AssocNone  -> (fixity+1, fixity+1)
+        AssocRight _ -> (fixity+1, fixity + infixSafe e2 (AssocLeft ()) fixity)
+        AssocLeft _ -> (fixity + infixSafe e1 (AssocRight ()) fixity, fixity+1)
+        AssocNone _ -> (fixity+1, fixity+1)
 
       -- This is a little bit awkward, but at least seems to produce no false
       -- results anymore
-      infixSafe :: SExpr -> Assoc -> Int -> Int
+      infixSafe :: SExpr -> Assoc () -> Int -> Int
       infixSafe (SInfix fx'' _ _) assoc fx'
         | lookupFix fx'' == (assoc, fx') = 1
         | otherwise = 0

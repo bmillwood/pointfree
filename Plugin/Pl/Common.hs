@@ -105,35 +105,35 @@ maxPrec = shift + 10
 minPrec = 0
 
 -- operator precedences are needed both for parsing and prettyprinting
-operators :: [[(String, (Assoc, Int))]]
+operators :: [[(String, (Assoc (), Int))]]
 operators = (map . map . second . second $ (+shift))
-  [[inf "." AssocRight 9, inf "!!" AssocLeft 9],
-   [inf name AssocRight 8 | name <- ["^", "^^", "**"]],
-   [inf name AssocLeft 7
+  [[inf "." (AssocRight ()) 9, inf "!!" (AssocLeft ()) 9],
+   [inf name (AssocRight ()) 8 | name <- ["^", "^^", "**"]],
+   [inf name (AssocLeft ()) 7
      | name <- ["*", "/", "`quot`", "`rem`", "`div`", "`mod`", ":%", "%"]],
-   [inf name AssocLeft 6  | name <- ["+", "-"]],
-   [inf name AssocRight 5 | name <- [":", "++"]],
-   [inf name AssocNone 4 
+   [inf name (AssocLeft ()) 6  | name <- ["+", "-"]],
+   [inf name (AssocRight ()) 5 | name <- [":", "++"]],
+   [inf name (AssocNone ()) 4
      | name <- ["==", "/=", "<", "<=", ">=", ">", "`elem`", "`notElem`"]],
-   [inf "&&" AssocRight 3],
-   [inf "||" AssocRight 2],
-   [inf ">>" AssocLeft 1, inf ">>=" AssocLeft 1, inf "=<<" AssocRight 1],
-   [inf name AssocRight 0 | name <- ["$", "$!", "`seq`"]]
+   [inf "&&" (AssocRight ()) 3],
+   [inf "||" (AssocRight ()) 2],
+   [inf ">>" (AssocLeft ()) 1, inf ">>=" (AssocLeft ()) 1, inf "=<<" (AssocRight ()) 1],
+   [inf name (AssocRight ()) 0 | name <- ["$", "$!", "`seq`"]]
   ] where
   inf name assoc fx = (name, (assoc, fx))
 
 reservedOps :: [String]
 reservedOps = ["->", "..", "="]
 
-opFM :: M.Map String (Assoc, Int)
+opFM :: M.Map String (Assoc (), Int)
 opFM = (M.fromList $ concat operators)
 
-lookupOp :: String -> Maybe (Assoc, Int)
+lookupOp :: String -> Maybe (Assoc (), Int)
 lookupOp k = M.lookup k opFM
 
-lookupFix :: String -> (Assoc, Int)
+lookupFix :: String -> (Assoc (), Int)
 lookupFix str = case lookupOp $ str of
-  Nothing -> (AssocLeft, 9 + shift)
+  Nothing -> ((AssocLeft ()), 9 + shift)
   Just x  -> x
 
 readM :: (Monad m, Read a) => String -> m a
