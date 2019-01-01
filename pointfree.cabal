@@ -26,10 +26,10 @@ Source-repository head
 Library
   Exposed-modules: Pointfree
 
-  Build-depends: base >= 4.5 && < 4.11,
+  Build-depends: base >= 4.5 && < 4.12,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
-                 haskell-src-exts >= 1.18 && < 1.20,
+                 haskell-src-exts >= 1.20 && < 1.21,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -42,10 +42,10 @@ Library
 Executable pointfree
   Main-is:       Main.hs
   GHC-options:   -W
-  Build-depends: base >= 4.3 && < 4.11,
+  Build-depends: base >= 4.3 && < 4.12,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.6,
-                 haskell-src-exts >= 1.18 && < 1.20,
+                 haskell-src-exts >= 1.20 && < 1.21,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -64,9 +64,9 @@ Test-suite tests
     array >= 0.3 && < 0.6,
     base < 5,
     containers >= 0.3 && < 0.6,
-    haskell-src-exts >= 1.18 && < 1.20,
-    HUnit >= 1.1 && < 1.6,
-    QuickCheck >= 2.1 && < 2.10,
+    haskell-src-exts >= 1.20 && < 1.21,
+    HUnit >= 1.6 && < 1.7,
+    QuickCheck >= 2.11 && < 2.12,
     transformers < 0.6
 
   GHC-Options:    -W

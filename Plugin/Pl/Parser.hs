@@ -22,6 +22,7 @@ qnameString (HSE.Special _ sc) = case sc of
   HSE.TupleCon{} -> todo sc
   HSE.Cons _ -> (Inf, ":")
   HSE.UnboxedSingleCon{} -> todo sc
+  HSE.ExprHole{} -> todo sc
 
 opString :: HSE.QOp a -> (Fixity, String)
 opString (HSE.QVarOp _ qn) = qnameString qn
