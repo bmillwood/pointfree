@@ -17,7 +17,7 @@ License-file: LICENSE
 Extra-source-files: ChangeLog README test/Test.hs
 
 Build-type:  Simple
-Tested-with: GHC == 8.0.1
+Tested-with: GHC == 8.4.4
 
 Source-repository head
   type:     git
