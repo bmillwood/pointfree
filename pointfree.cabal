@@ -21,15 +21,15 @@ Tested-with: GHC == 8.0.1
 
 Source-repository head
   type:     git
-  location: git://github.com/benmachine/pointfree.git
+  location: git://github.com/bmillwood/pointfree.git
 
 Library
   Exposed-modules: Pointfree
 
-  Build-depends: base >= 4.5 && < 4.11,
+  Build-depends: base >= 4.5 && < 4.13,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.6,
-                 haskell-src-exts >= 1.18 && < 1.20,
+                 containers >= 0.4 && < 0.7,
+                 haskell-src-exts >= 1.20 && < 1.21,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -42,10 +42,10 @@ Library
 Executable pointfree
   Main-is:       Main.hs
   GHC-options:   -W
-  Build-depends: base >= 4.3 && < 4.11,
+  Build-depends: base >= 4.3 && < 4.13,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.6,
-                 haskell-src-exts >= 1.18 && < 1.20,
+                 containers >= 0.4 && < 0.7,
+                 haskell-src-exts >= 1.20 && < 1.21,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -58,15 +58,20 @@ Test-suite tests
   Type: exitcode-stdio-1.0
 
   Main-is: Test.hs
-  Other-modules:
+  Other-modules: Plugin.Pl.Common
+                 Plugin.Pl.Parser
+                 Plugin.Pl.PrettyPrinter
+                 Plugin.Pl.Optimize
+                 Plugin.Pl.Rules
+                 Plugin.Pl.Transform
 
   Build-depends:
     array >= 0.3 && < 0.6,
     base < 5,
-    containers >= 0.3 && < 0.6,
-    haskell-src-exts >= 1.18 && < 1.20,
-    HUnit >= 1.1 && < 1.6,
-    QuickCheck >= 2.1 && < 2.10,
+    containers >= 0.3 && < 0.7,
+    haskell-src-exts >= 1.20 && < 1.21,
+    HUnit >= 1.1 && < 1.7,
+    QuickCheck >= 2.1 && < 2.13,
     transformers < 0.6
 
   GHC-Options:    -W
