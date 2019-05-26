@@ -1,3 +1,6 @@
+v1.1.1.5:
+* Metadata fixes and dependency update for base 4.12, containers 0.6, QuickCheck 2.12 (thanks Bryan Gardiner)
+
 v1.1.1.4:
 * Dependency update for base 4.11, HSE 1.20, HUnit 1.6, QuickCheck 2.11
 
