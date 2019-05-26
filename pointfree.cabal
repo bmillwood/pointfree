@@ -10,7 +10,7 @@ Description:
     plugin for lambdabot.
 
 Author:       Thomas Jäger
-Maintainer:   Ben Millwood <haskell@benmachine.co.uk>
+Maintainer:   Ben Millwood <thebenmachine+git@gmail.com>
 License:      OtherLicense
 License-file: LICENSE
 
@@ -21,7 +21,7 @@ Tested-with: GHC == 8.6.4
 
 Source-repository head
   type:     git
-  location: git://github.com/benmachine/pointfree.git
+  location: git://github.com/bmillwood/pointfree.git
 
 Library
   Exposed-modules: Pointfree
