@@ -7,6 +7,7 @@ import Plugin.Pl.PrettyPrinter
 import Plugin.Pl.Transform
 
 import System.Environment (getArgs)
+import System.Exit (die)
 import System.Console.GetOpt
 
 data Flag = Verbose 
@@ -52,5 +53,5 @@ pf input verbose = case parsePF input of
                putStrLn "Optimized expression:"
                mapM_ (putStrLn . prettyTopLevel) $ mapTopLevel' optimize d'
        else putStrLn . prettyTopLevel . last . mapTopLevel' optimize $ mapTopLevel transform d
-  Left err -> putStrLn err
+  Left err -> die err
 
