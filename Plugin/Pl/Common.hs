@@ -136,7 +136,7 @@ lookupFix str = case lookupOp $ str of
   Nothing -> ((AssocLeft ()), 9 + shift)
   Just x  -> x
 
-readM :: (Monad m, Read a) => String -> m a
+readM :: (MonadFail m, Read a) => String -> m a
 readM s = case [x | (x,t) <- reads s, ("","")  <- lex t] of
             [x] -> return x
             []  -> fail "readM: No parse."
