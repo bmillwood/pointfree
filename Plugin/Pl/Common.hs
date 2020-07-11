@@ -17,6 +17,7 @@ import Data.List (intersperse, minimumBy)
 import qualified Data.Map as M
 
 import Control.Monad
+
 import Control.Arrow (first, second, (***), (&&&), (|||), (+++))
 
 import Language.Haskell.Exts (Assoc(..))
@@ -136,7 +137,7 @@ lookupFix str = case lookupOp $ str of
   Nothing -> ((AssocLeft ()), 9 + shift)
   Just x  -> x
 
-readM :: (Monad m, Read a) => String -> m a
+readM :: (Monad m, MonadFail m, Read a) => String -> m a
 readM s = case [x | (x,t) <- reads s, ("","")  <- lex t] of
             [x] -> return x
             []  -> fail "readM: No parse."
