@@ -1,7 +1,7 @@
 Cabal-Version: >= 1.8
 
 Name:     pointfree
-Version:  1.1.1.6
+Version:  1.1.1.5
 Category: Tool
 Synopsis: Tool for refactoring expressions into pointfree form
 
@@ -17,7 +17,7 @@ License-file: LICENSE
 Extra-source-files: ChangeLog README test/Test.hs
 
 Build-type:  Simple
-Tested-with: GHC == 8.6.4
+Tested-with: GHC == 8.10.1
 
 Source-repository head
   type:     git
