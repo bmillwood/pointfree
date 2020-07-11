@@ -71,7 +71,7 @@ Test-suite tests
     containers >= 0.4 && < 0.7,
     haskell-src-exts >= 1.20 && < 1.23.1,
     HUnit >= 1.6 && < 1.7,
-    QuickCheck >= 2.11 && < 2.13,
+    QuickCheck >= 2.11 && < 2.15,
     transformers < 0.6
 
   GHC-Options:    -W
