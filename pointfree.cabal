@@ -17,7 +17,7 @@ License-file: LICENSE
 Extra-source-files: ChangeLog README test/Test.hs
 
 Build-type:  Simple
-Tested-with: GHC == 8.6.4
+Tested-with: GHC == 8.8.4
 
 Source-repository head
   type:     git
@@ -26,10 +26,10 @@ Source-repository head
 Library
   Exposed-modules: Pointfree
 
-  Build-depends: base >= 4.5 && < 4.13,
+  Build-depends: base >= 4.5 && < 4.14,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.7,
-                 haskell-src-exts >= 1.20 && < 1.21,
+                 haskell-src-exts >= 1.20 && < 1.24,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -42,10 +42,10 @@ Library
 Executable pointfree
   Main-is:       Main.hs
   GHC-options:   -W
-  Build-depends: base >= 4.5 && < 4.13,
+  Build-depends: base >= 4.5 && < 4.14,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.7,
-                 haskell-src-exts >= 1.20 && < 1.21,
+                 haskell-src-exts >= 1.20 && < 1.24,
                  transformers < 0.6
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
@@ -66,12 +66,12 @@ Test-suite tests
                  Plugin.Pl.Transform
 
   Build-depends:
-    base >= 4.5 && < 4.13,
+    base >= 4.5 && < 4.14,
     array >= 0.3 && < 0.6,
     containers >= 0.4 && < 0.7,
-    haskell-src-exts >= 1.20 && < 1.21,
+    haskell-src-exts >= 1.20 && < 1.24,
     HUnit >= 1.6 && < 1.7,
-    QuickCheck >= 2.11 && < 2.13,
+    QuickCheck >= 2.11 && < 2.14,
     transformers < 0.6
 
   GHC-Options:    -W

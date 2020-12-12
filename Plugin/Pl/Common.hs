@@ -136,7 +136,10 @@ lookupFix str = case lookupOp $ str of
   Nothing -> ((AssocLeft ()), 9 + shift)
   Just x  -> x
 
-readM :: (Monad m, Read a) => String -> m a
+-- This was previously generalized to Monad, but now the right type is MonadFail,
+-- but different versions of GHC need different imports / constraints, but we only
+-- actually use it with Maybe anyway.
+readM :: (Read a) => String -> Maybe a
 readM s = case [x | (x,t) <- reads s, ("","")  <- lex t] of
             [x] -> return x
             []  -> fail "readM: No parse."
