@@ -1,3 +1,7 @@
+v1.1.1.7:
+* Dependency update for GHC 8.8, HSE 1.23
+* Updates to Cabal file to meet new Hackage constraints
+
 v1.1.1.6:
 * Fix a bug in alpha-renaming (thanks Bertram Felgenhauer)
 * Exit nonzero on parse failures (thanks meck)
