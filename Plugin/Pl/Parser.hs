@@ -93,6 +93,6 @@ parseMode =
 parsePF :: String -> Either String TopLevel
 parsePF inp = case HSE.parseExpWithMode parseMode inp of
   HSE.ParseOk e -> Right (TLE (hseToExpr e))
-  HSE.ParseFailed _ _ -> case HSE.parseDecl inp of
+  HSE.ParseFailed _ _ -> case HSE.parseDeclWithMode parseMode inp of
     HSE.ParseOk d -> Right (TLD True (hseToDecl d))
     HSE.ParseFailed _ err -> Left err

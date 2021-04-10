@@ -190,7 +190,8 @@ unitTests = TestList [
   unitTest "\\(x, y) -> z" ["const z"],
   unitTest "\\(x, y) -> a" ["const a"],
   unitTest "\\x -> \\x y -> x" ["const const"],
-  unitTest "\\x → x" ["id"]
+  unitTest "\\x → x" ["id"],
+  unitTest "f = \\x → x" ["f = id"]
   ]
 
 main :: IO ()
