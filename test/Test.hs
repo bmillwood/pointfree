@@ -189,7 +189,8 @@ unitTests = TestList [
     ["flip (Control.Monad.>>=) . (Control.Applicative.pure .)"],
   unitTest "\\(x, y) -> z" ["const z"],
   unitTest "\\(x, y) -> a" ["const a"],
-  unitTest "\\x -> \\x y -> x" ["const const"]
+  unitTest "\\x -> \\x y -> x" ["const const"],
+  unitTest "\\x → x" ["id"]
   ]
 
 main :: IO ()

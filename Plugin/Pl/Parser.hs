@@ -84,8 +84,14 @@ hseToPattern pat = case pat of
   HSE.PWildCard _ -> PVar "_"
   _ -> todo pat
 
+parseMode :: HSE.ParseMode
+parseMode =
+  HSE.defaultParseMode{
+      HSE.extensions = [HSE.EnableExtension HSE.UnicodeSyntax]
+    }
+
 parsePF :: String -> Either String TopLevel
-parsePF inp = case HSE.parseExp inp of
+parsePF inp = case HSE.parseExpWithMode parseMode inp of
   HSE.ParseOk e -> Right (TLE (hseToExpr e))
   HSE.ParseFailed _ _ -> case HSE.parseDecl inp of
     HSE.ParseOk d -> Right (TLD True (hseToDecl d))
