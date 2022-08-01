@@ -599,9 +599,9 @@ rules = Or [
   -- (fmap f g x) --> f (g x)
   rr0 (\f g x -> fmapE `a` f `a` g `a` x)
       (\f g x -> f `a` (g `a` x)),
-  -- return x y --> y
+  -- return x y --> x
   rr  (\y x -> returnE `a` x `a` y)
-      (\y _ -> y),
+      (\_ x -> x),
   -- liftM2 f g h x --> g x `h` h x
   rr0 (\f g h x -> liftM2E `a` f `a` g `a` h `a` x)
       (\f g h x -> f `a` (g `a` x) `a` (h `a` x)),
