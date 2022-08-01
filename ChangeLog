@@ -1,3 +1,7 @@
+v1.1.1.9:
+* Dependency update for base 4.15, QC 2.14
+* Fix 'return x y' being incorrectly written to 'y' (instead of 'x')
+
 v1.1.1.8:
 * Dependency update for GHC 8.10
 * Enable UnicodeSyntax
