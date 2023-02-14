@@ -2,7 +2,6 @@ module Plugin.Pl.Parser (parsePF) where
 
 import Plugin.Pl.Common
 
-import Data.List (intercalate)
 import qualified Language.Haskell.Exts as HSE
 
 todo :: (Functor e, Show (e ())) => e a -> r
@@ -96,10 +95,10 @@ parsePF inp = case HSE.parseExpWithMode parseMode inp of
   HSE.ParseOk e -> Right (TLE (hseToExpr e))
   HSE.ParseFailed _ expParseErr -> case HSE.parseDeclWithMode parseMode inp of
     HSE.ParseOk d -> Right (TLD True (hseToDecl d))
-    HSE.ParseFailed _ declParseErr -> Left (joinErrorMessages expParseErr declParseErr) where
-      joinErrorMessages :: String -> String -> String
-      joinErrorMessages exp decl = intercalate "\n"
-        [ "Parsing input as an expression failed with \""  ++ exp  ++ "\""
-        , "Parsing input as an declaration failed with \"" ++ decl ++ "\""
+    HSE.ParseFailed _ declParseErr -> Left jointErrorMessage where
+      jointErrorMessage = join
+        [ "Parsing input as an expression failed with \"", expParseErr,  "\""
+        , "\n"
+        , "Parsing input as an declaration failed with \"", declParseErr, "\""
         ]
 
