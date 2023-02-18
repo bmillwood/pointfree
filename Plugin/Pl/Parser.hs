@@ -93,6 +93,12 @@ parseMode =
 parsePF :: String -> Either String TopLevel
 parsePF inp = case HSE.parseExpWithMode parseMode inp of
   HSE.ParseOk e -> Right (TLE (hseToExpr e))
-  HSE.ParseFailed _ _ -> case HSE.parseDeclWithMode parseMode inp of
+  HSE.ParseFailed _ expParseErr -> case HSE.parseDeclWithMode parseMode inp of
     HSE.ParseOk d -> Right (TLD True (hseToDecl d))
-    HSE.ParseFailed _ err -> Left err
+    HSE.ParseFailed _ declParseErr -> Left jointErrorMessage where
+      jointErrorMessage = join
+        [ "Parsing input as an expression failed with \"", expParseErr,  "\""
+        , "\n"
+        , "Parsing input as an declaration failed with \"", declParseErr, "\""
+        ]
+
