@@ -1,4 +1,7 @@
-next version:
+v1.1.1.11:
+* Dependency update for base 4.18, GHC 9.4.5 (PR #42, thanks Miezhiko)
+
+v1.1.1.10:
 * When parsing as an expression and as a declaration both fail, show both errors (PR #39, thanks 1in1)
 * GitHub Action for CI
 * Dependency update for base 4.16, GHC 9.2.5 (PR #39, thanks Andreas Ländle)
