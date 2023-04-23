@@ -1,3 +1,6 @@
+next version:
+* When parsing as an expression and as a declaration both fail, show both errors (PR #39, thanks 1in1)
+
 v1.1.1.9:
 * Dependency update for base 4.15, QC 2.14
 * Fix 'return x y' being incorrectly written to 'y' (instead of 'x')
