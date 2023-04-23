@@ -1,3 +1,5 @@
+name: CI
+
 on:
   - pull_request
 
@@ -33,7 +35,10 @@ jobs:
           echo "CABAL_VERSION=${CABAL_VERSION}" >> "${GITHUB_ENV}"
 
       - shell: bash
-        run: cabal configure --enable-tests
+        run: |
+          cabal configure --enable-tests
+          cabal build --dry-run
+        # The last step generates dist-newstyle/cache/plan.json for the cache key.
 
       - uses: actions/cache/restore@v3
         id: cache
