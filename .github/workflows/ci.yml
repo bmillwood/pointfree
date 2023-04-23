@@ -1,0 +1,61 @@
+on:
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test on GHC ${{ matrix.ghc-version }}
+    strategy:
+      matrix:
+        ghc-version: [9.0.2]
+    runs-on: ubuntu-latest
+    steps:
+      # Derived from example at https://github.com/haskell/actions/tree/main/setup
+      - uses: actions/checkout@v3
+
+      - name: Set up GHC ${{ matrix.ghc-version }}
+        uses: haskell/actions/setup@v2
+        id: setup
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+
+      - name: Check cabal file
+        run: cabal check
+
+      - name: Record installed minor versions of GHC and Cabal
+        shell: bash
+        run: |
+          GHC_VERSION=$(ghc --numeric-version)
+          CABAL_VERSION=$(cabal --numeric-version)
+          echo "GHC_VERSION=${GHC_VERSION}"     >> "${GITHUB_ENV}"
+          echo "CABAL_VERSION=${CABAL_VERSION}" >> "${GITHUB_ENV}"
+
+      - shell: bash
+        run: cabal configure --enable-tests
+
+      - uses: actions/cache/restore@v3
+        id: cache
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-cabal-${{ env.CABAL_VERSION }}-plan-${{ hashFiles('**/plan.json') }}
+          restore-keys: |
+            ${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-cabal-${{ env.CABAL_VERSION }}-
+
+      - shell: bash
+        run: cabal build all --only-dependencies
+
+      - uses: actions/cache/save@v3
+        # Caches are immutable, trying to save with the same key would error.
+        if: ${{ steps.cache.outputs.cache-primary-key != steps.cache.outputs.cache-matched-key }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      - shell: bash
+        run: cabal build all
+      - shell: bash
+        run: cabal test all
+      - shell: bash
+        run: cabal haddock all
