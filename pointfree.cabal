@@ -17,7 +17,7 @@ License-file: LICENSE
 Extra-source-files: ChangeLog README test/Test.hs
 
 Build-type:  Simple
-Tested-with: GHC == 9.0.2, GHC == 9.2.5
+Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5
 
 Source-repository head
   type:     git
@@ -27,7 +27,7 @@ Library
   Exposed-modules: Pointfree
   Default-language: Haskell2010
 
-  Build-depends: base >= 4.5 && < 4.17,
+  Build-depends: base >= 4.5 && < 4.19,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.7,
                  haskell-src-exts >= 1.20 && < 1.24,
@@ -44,7 +44,7 @@ Executable pointfree
   Main-is:       Main.hs
   Default-language: Haskell2010
   GHC-options:   -W
-  Build-depends: base >= 4.5 && < 4.17,
+  Build-depends: base >= 4.5 && < 4.19,
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.7,
                  haskell-src-exts >= 1.20 && < 1.24,
@@ -68,7 +68,7 @@ Test-suite tests
                  Plugin.Pl.Transform
 
   Build-depends:
-    base >= 4.5 && < 4.17,
+    base >= 4.5 && < 4.19,
     array >= 0.3 && < 0.6,
     containers >= 0.4 && < 0.7,
     haskell-src-exts >= 1.20 && < 1.24,
