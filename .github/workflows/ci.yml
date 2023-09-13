@@ -11,7 +11,7 @@ jobs:
     name: Build and test on GHC ${{ matrix.ghc-version }}
     strategy:
       matrix:
-        ghc-version: [9.0.2, 9.2.5]
+        ghc-version: [9.0.2, 9.2.5, 9.4.5]
     runs-on: ubuntu-latest
     steps:
       # Derived from example at https://github.com/haskell/actions/tree/main/setup
