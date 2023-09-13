@@ -1,3 +1,6 @@
+next version:
+* Dependency update for transformers 0.6, GHC 9.6.2 (PR #43, thanks Miezhiko)
+
 v1.1.1.11:
 * Dependency update for base 4.18, GHC 9.4.5 (PR #42, thanks Miezhiko)
 
