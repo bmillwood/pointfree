@@ -19,7 +19,7 @@ Extra-source-files: ChangeLog README test/Test.hs
 Build-type:  Simple
 
 -- matches the list in .github/workflows/ci.yml
-Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5
+Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5, GHC == 9.6.2
 
 Source-repository head
   type:     git
@@ -33,7 +33,7 @@ Library
                  array >= 0.3 && < 0.6,
                  containers >= 0.4 && < 0.7,
                  haskell-src-exts >= 1.20 && < 1.24,
-                 transformers < 0.6
+                 transformers < 0.7
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
                  Plugin.Pl.PrettyPrinter
