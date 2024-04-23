@@ -19,7 +19,7 @@ Extra-source-files: ChangeLog README test/Test.hs
 Build-type:  Simple
 
 -- matches the list in .github/workflows/ci.yml
-Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5, GHC == 9.6.2
+Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5, GHC == 9.6.2, GHC == 9.8.2
 
 Source-repository head
   type:     git
@@ -29,9 +29,9 @@ Library
   Exposed-modules: Pointfree
   Default-language: Haskell2010
 
-  Build-depends: base >= 4.5 && < 4.19,
+  Build-depends: base >= 4.5 && < 4.20,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.7,
+                 containers >= 0.4 && < 0.8,
                  haskell-src-exts >= 1.20 && < 1.24,
                  transformers < 0.7
   Other-modules: Plugin.Pl.Common
@@ -46,11 +46,11 @@ Executable pointfree
   Main-is:       Main.hs
   Default-language: Haskell2010
   GHC-options:   -W
-  Build-depends: base >= 4.5 && < 4.19,
+  Build-depends: base >= 4.5 && < 4.20,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.7,
+                 containers >= 0.4 && < 0.8,
                  haskell-src-exts >= 1.20 && < 1.24,
-                 transformers < 0.6
+                 transformers < 0.7
   Other-modules: Plugin.Pl.Common
                  Plugin.Pl.Parser
                  Plugin.Pl.PrettyPrinter
@@ -70,13 +70,13 @@ Test-suite tests
                  Plugin.Pl.Transform
 
   Build-depends:
-    base >= 4.5 && < 4.19,
+    base >= 4.5 && < 4.20,
     array >= 0.3 && < 0.6,
-    containers >= 0.4 && < 0.7,
+    containers >= 0.4 && < 0.8,
     haskell-src-exts >= 1.20 && < 1.24,
     HUnit >= 1.6 && < 1.7,
     QuickCheck >= 2.11 && < 2.15,
-    transformers < 0.6
+    transformers < 0.7
 
   Default-language: Haskell2010
   GHC-Options:    -W
