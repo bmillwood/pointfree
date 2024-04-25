@@ -1,4 +1,5 @@
-next version:
+v1.1.1.12:
+* Dependency update for GHC 9.8.2 + libraries (PR #45, thanks fgaz)
 * Dependency update for transformers 0.6, GHC 9.6.2 (PR #43, thanks Miezhiko)
 
 v1.1.1.11:
