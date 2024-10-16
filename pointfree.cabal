@@ -19,7 +19,7 @@ Extra-source-files: ChangeLog README test/Test.hs
 Build-type:  Simple
 
 -- matches the list in .github/workflows/ci.yml
-Tested-with: GHC == 9.0.2, GHC == 9.2.5, GHC == 9.4.5, GHC == 9.6.2, GHC == 9.8.2
+Tested-with: GHC == 9.4.8, GHC == 9.6.6, GHC == 9.8.2, GHC == 9.10.1
 
 Source-repository head
   type:     git
