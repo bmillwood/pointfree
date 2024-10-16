@@ -11,14 +11,14 @@ jobs:
     name: Build and test on GHC ${{ matrix.ghc-version }}
     strategy:
       matrix:
-        ghc-version: [9.0.2, 9.2.5, 9.4.5, 9.6.2, 9.8.2]
+        ghc-version: ["9.4.8", "9.6.6", "9.8.2", "9.10.1"]
     runs-on: ubuntu-latest
     steps:
-      # Derived from example at https://github.com/haskell/actions/tree/main/setup
-      - uses: actions/checkout@v3
+      # Derived from example at https://github.com/haskell-actions/setup
+      - uses: actions/checkout@v4
 
       - name: Set up GHC ${{ matrix.ghc-version }}
-        uses: haskell/actions/setup@v2
+        uses: haskell-actions/setup@v2.7.6
         id: setup
         with:
           ghc-version: ${{ matrix.ghc-version }}
@@ -26,34 +26,30 @@ jobs:
       - name: Check cabal file
         run: cabal check
 
-      - name: Record installed minor versions of GHC and Cabal
-        shell: bash
-        run: |
-          GHC_VERSION=$(ghc --numeric-version)
-          CABAL_VERSION=$(cabal --numeric-version)
-          echo "GHC_VERSION=${GHC_VERSION}"     >> "${GITHUB_ENV}"
-          echo "CABAL_VERSION=${CABAL_VERSION}" >> "${GITHUB_ENV}"
-
       - shell: bash
         run: |
-          cabal configure --enable-tests
+          cabal configure --enable-tests --disable-documentation
           cabal build --dry-run
         # The last step generates dist-newstyle/cache/plan.json for the cache key.
 
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         id: cache
+        env:
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}
         with:
           path: ${{ steps.setup.outputs.cabal-store }}
-          key: ${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-cabal-${{ env.CABAL_VERSION }}-plan-${{ hashFiles('**/plan.json') }}
-          restore-keys: |
-            ${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-cabal-${{ env.CABAL_VERSION }}-
+          key: ${{ env.key }}-plan-${{ hashFiles('**/plan.json') }}
+          restore-keys: ${{ env.key }}-
 
       - shell: bash
+        # If we had an exact cache hit, the dependencies will be up to date.
+        if: steps.cache.outputs.cache-hit != 'true'
         run: cabal build all --only-dependencies
 
-      - uses: actions/cache/save@v3
-        # Caches are immutable, trying to save with the same key would error.
-        if: ${{ steps.cache.outputs.cache-primary-key != steps.cache.outputs.cache-matched-key }}
+      # Cache dependencies already here, so that we do not have to rebuild them should the subsequent steps fail.
+      - uses: actions/cache/save@v4
+        # If we had an exact cache hit, trying to save the cache would error because of key clash.
+        if: steps.cache.outputs.cache-hit != 'true'
         with:
           path: ${{ steps.setup.outputs.cabal-store }}
           key: ${{ steps.cache.outputs.cache-primary-key }}
