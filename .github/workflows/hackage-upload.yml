@@ -1,0 +1,31 @@
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  hackage-upload:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - run: |
+        git config --global user.name "$GIT_USER"
+        git config --global user.email "${GIT_USER}[bot]@users.noreply.github.com"
+      env:
+        GIT_USER: ${{ github.actor }}
+    - run: ./bump_version.py
+    - run: cabal sdist
+    - uses: haskell-actions/hackage-publish@73c1489054aa60b7aa082cdde9b51502d960c0e1 # v1.1
+      if: ${{ !inputs.dryRun }}
+      with:
+        hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
+    - run: git push
+      if: ${{ !inputs.dryRun }}

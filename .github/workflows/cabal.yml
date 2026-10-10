@@ -1,0 +1,107 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+    - .github/workflows/cabal.yml
+    - cabal.project
+    - "**.cabal"
+    - "**.hs"
+
+# Below copies significantly from
+# https://github.com/haskell-actions/setup/blob/v2.6.2/README.md
+
+# INFO: The following configuration block ensures that only one build runs per branch,
+# which may be desirable for projects with a costly build process.
+# Remove this block from the CI workflow to let each CI job run to completion.
+concurrency:
+  group: build-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ghc-version: ['9.4', '9.6', '9.8', '9.10']
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
+    env:
+      # false for non-PR triggers
+      IS_RENOVATE: ${{ startsWith(github.head_ref, 'renovate/') }}
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # for pulling Renovate New-Version trailers later
+          fetch-depth: ${{ env.IS_RENOVATE == 'true' && '0' || '1' }}
+
+      - name: Set up GHC ${{ matrix.ghc-version }}
+        uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2.12.1
+        id: setup
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+          # Defaults, added for clarity:
+          cabal-version: 'latest'
+          cabal-update: true
+
+      - name: Check cabal file
+        run: cabal check
+
+        # inspired by, but distinct from,
+        # https://github.com/haskell-actions/setup/blob/main/docs/examples.md#dependency-updates
+      - name: Require new package versions are tested
+        if: env.IS_RENOVATE == 'true'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git log \
+            --format="%(trailers:key=New-hackage-version,valueonly=true)" \
+            "$BASE..$HEAD" \
+            | sort -u \
+            | sed -re '/./ s/^/constraints: /' \
+            | tee -a cabal.project
+
+      - name: Configure the build
+        run: |
+          cabal configure --enable-tests --enable-benchmarks --enable-documentation
+          cabal build all --dry-run
+        # The last step generates dist-newstyle/cache/plan.json for the cache key.
+
+      - name: Restore cached dependencies
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cache
+        env:
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ env.key }}-plan-${{ hashFiles('**/plan.json') }}
+          restore-keys: ${{ env.key }}-
+
+      - name: Install dependencies
+        # If we had an exact cache hit, the dependencies will be up to date.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: cabal build all --only-dependencies
+
+      # Cache dependencies already here, so that we do not have to rebuild them should the subsequent steps fail.
+      - name: Save cached dependencies
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        # If we had an exact cache hit, trying to save the cache would error because of key clash.
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      - name: Build
+        run: cabal build all
+
+      - name: Run tests
+        run: cabal test all
+
+      - name: Build documentation
+        run: cabal haddock all
