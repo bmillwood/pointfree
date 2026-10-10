@@ -23,7 +23,7 @@ Tested-with: GHC == 9.4.8, GHC == 9.6.6, GHC == 9.8.2, GHC == 9.10.1
 
 Source-repository head
   type:     git
-  location: git://github.com/bmillwood/pointfree.git
+  location: https://github.com/bmillwood/pointfree.git
 
 Library
   Exposed-modules: Pointfree
