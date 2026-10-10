@@ -75,7 +75,7 @@ Test-suite tests
     containers >=0.4 && <0.9,
     haskell-src-exts >= 1.20 && < 1.24,
     HUnit >= 1.6 && < 1.7,
-    QuickCheck >= 2.11 && < 2.16,
+    QuickCheck >=2.11 && <2.20,
     transformers < 0.7
 
   Default-language: Haskell2010
