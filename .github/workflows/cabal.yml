@@ -26,7 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        ghc-version: ['9.4', '9.6', '9.8', '9.10']
+        ghc-version:
+          - '9.6.7'
+          - '9.8.4'
+          - '9.10.3'
+          - '9.12.4'
+          - '9.14.1'
     defaults:
       run:
         shell: bash -euo pipefail {0}
