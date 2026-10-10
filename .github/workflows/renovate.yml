@@ -1,0 +1,13 @@
+on:
+  schedule:
+  - cron: "30 17 * * 5" # Friday afternoon
+  workflow_dispatch:
+  pull_request:
+    paths:
+    - .github/renovate.json
+    - .github/workflows/renovate.yml
+
+jobs:
+  upgrade-dependencies:
+    uses: bmillwood/renovateconfig/.github/workflows/renovate.yml@cb1d24969f11d733969e894181366c4d50c41aa0 # main
+    secrets: inherit
