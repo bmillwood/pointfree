@@ -31,7 +31,7 @@ Library
 
   Build-depends: base >= 4.5 && < 4.21,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.8,
+                 containers >=0.4 && <0.9,
                  haskell-src-exts >= 1.20 && < 1.24,
                  transformers < 0.7
   Other-modules: Plugin.Pl.Common
@@ -48,7 +48,7 @@ Executable pointfree
   GHC-options:   -W
   Build-depends: base >= 4.5 && < 4.21,
                  array >= 0.3 && < 0.6,
-                 containers >= 0.4 && < 0.8,
+                 containers >=0.4 && <0.9,
                  haskell-src-exts >= 1.20 && < 1.24,
                  transformers < 0.7
   Other-modules: Plugin.Pl.Common
@@ -72,7 +72,7 @@ Test-suite tests
   Build-depends:
     base >= 4.5 && < 4.21,
     array >= 0.3 && < 0.6,
-    containers >= 0.4 && < 0.8,
+    containers >=0.4 && <0.9,
     haskell-src-exts >= 1.20 && < 1.24,
     HUnit >= 1.6 && < 1.7,
     QuickCheck >= 2.11 && < 2.16,
